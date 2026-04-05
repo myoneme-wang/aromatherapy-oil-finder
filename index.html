@@ -3,86 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>芳香療法精油症狀搜尋 | Aromatherapy Oil Finder</title>
+  <title>自然療法症狀搜尋 | Natural Remedy Finder</title>
   <style>
-    :root{--sage:#6b8f71;--sage-light:#a8c5ad;--sage-pale:#e8f0e9;--gold:#c9a84c;--gold-light:#f0d98a;--deep:#2c3e35;--text:#2c3e35;--text-light:#6b7c73;--bg:#f5f7f5;--white:#ffffff;--rare-color:#7b5ea7;--rare-light:#ede8f5;--shadow:0 4px 24px rgba(44,62,53,0.10);}
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Noto Serif TC','Georgia',serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
-    header{background:linear-gradient(135deg,var(--deep) 0%,#3d5c48 60%,var(--sage) 100%);color:white;text-align:center;padding:3rem 1.5rem 2.5rem;position:relative;overflow:hidden;}
-    header .subtitle{font-size:.9rem;letter-spacing:.15em;opacity:.75;text-transform:uppercase;margin-bottom:.8rem;}
-    header h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;letter-spacing:.05em;margin-bottom:.6rem;}
-    header p{font-size:1rem;opacity:.82;max-width:480px;margin:0 auto;}
-    .leaf-icon{font-size:2.5rem;margin-bottom:.6rem;display:block;}
-    .container{max-width:900px;margin:0 auto;padding:2rem 1.2rem;}
-    .card{background:var(--white);border-radius:18px;box-shadow:var(--shadow);padding:2rem;margin-bottom:2rem;}
-    .card h2{font-size:1.25rem;color:var(--deep);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
-    .search-wrap{position:relative;margin-bottom:1rem;}
-    #symptom-search{width:100%;padding:.75rem 1.1rem .75rem 2.8rem;border:2px solid #d0dcd2;border-radius:12px;font-size:1rem;font-family:inherit;outline:none;transition:border-color .2s;background:var(--sage-pale);}
-    #symptom-search:focus{border-color:var(--sage);background:white;}
-    .search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--sage);font-size:1.1rem;pointer-events:none;}
-    .cat-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem;}
-    .cat-tab{padding:.3rem .9rem;border:2px solid #d0dcd2;border-radius:30px;font-size:.85rem;cursor:pointer;transition:all .2s;background:white;}
-    .cat-tab.active{background:var(--sage);color:white;border-color:var(--sage);}
-    .cat-tab:hover:not(.active){border-color:var(--sage-light);background:var(--sage-pale);}
-    .symptom-grid{display:flex;flex-wrap:wrap;gap:.55rem;}
-    .symptom-chip{padding:.4rem 1rem;border:2px solid #d0dcd2;border-radius:30px;font-size:.9rem;cursor:pointer;user-select:none;transition:all .18s;background:white;}
-    .symptom-chip:hover{border-color:var(--sage);background:var(--sage-pale);}
-    .symptom-chip.selected{background:var(--sage);color:white;border-color:var(--sage);}
-    .symptom-chip.hidden{display:none;}
-    .selected-wrap{margin-top:1.2rem;padding:.8rem 1rem;background:var(--sage-pale);border-radius:12px;min-height:54px;}
-    .selected-label{font-size:.8rem;color:var(--text-light);margin-bottom:.4rem;}
-    .selected-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;}
-    .selected-pill{background:var(--sage);color:white;padding:.25rem .75rem .25rem .5rem;border-radius:20px;font-size:.85rem;display:flex;align-items:center;gap:.3rem;}
-    .selected-pill button{background:none;border:none;color:white;cursor:pointer;font-size:.95rem;padding:0;line-height:1;opacity:.8;}
-    .empty-hint{color:var(--text-light);font-size:.88rem;font-style:italic;}
-    .btn-search{width:100%;margin-top:1.5rem;padding:.95rem;background:linear-gradient(135deg,var(--sage) 0%,#4a7558 100%);color:white;border:none;border-radius:14px;font-size:1.1rem;font-family:inherit;cursor:pointer;letter-spacing:.05em;transition:all .2s;box-shadow:0 4px 16px rgba(107,143,113,.3);}
-    .btn-search:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(107,143,113,.4);}
-    .btn-search:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-    #results{display:none;}
-    .results-header{text-align:center;margin-bottom:1.5rem;}
-    .results-header h2{font-size:1.4rem;color:var(--deep);}
-    .results-header p{color:var(--text-light);font-size:.9rem;margin-top:.3rem;}
-    .section-title{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;color:var(--deep);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--sage-pale);}
-    .badge{background:var(--sage);color:white;padding:.15rem .6rem;border-radius:20px;font-size:.8rem;}
-    .badge.rare{background:var(--rare-color);}
-    .oils-grid{display:grid;gap:1.2rem;grid-template-columns:1fr;}
-    @media(min-width:640px){.oils-grid{grid-template-columns:1fr 1fr;}}
-    .oil-card{border:2px solid #e0ebe2;border-radius:16px;padding:1.3rem;background:white;transition:all .2s;position:relative;overflow:hidden;}
-    .oil-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--sage),var(--sage-light));}
-    .oil-card.rare::before{background:linear-gradient(90deg,var(--rare-color),#b08ed4);}
-    .oil-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--sage-light);}
-    .oil-card.rare:hover{border-color:#c4aee0;}
-    .oil-rank{position:absolute;top:.8rem;right:.8rem;font-size:.7rem;color:var(--text-light);}
-    .oil-emoji{font-size:2rem;margin-bottom:.5rem;display:block;}
-    .oil-name-zh{font-size:1.15rem;font-weight:700;color:var(--deep);}
-    .oil-name-en{font-size:.82rem;color:var(--text-light);font-style:italic;margin-bottom:.5rem;}
-    .oil-latin{font-size:.75rem;color:#999;margin-bottom:.8rem;}
-    .score-bar-wrap{margin-bottom:.8rem;}
-    .score-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-light);margin-bottom:.3rem;}
-    .score-bar{height:6px;border-radius:3px;background:#e8ede9;overflow:hidden;}
-    .score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--sage),var(--sage-light));transition:width .6s cubic-bezier(.25,.8,.25,1);}
-    .oil-card.rare .score-fill{background:linear-gradient(90deg,var(--rare-color),#b08ed4);}
-    .matched-symptoms{margin-bottom:.8rem;}
-    .matched-label{font-size:.78rem;color:var(--text-light);margin-bottom:.3rem;}
-    .matched-pills{display:flex;flex-wrap:wrap;gap:.3rem;}
-    .matched-pill{background:var(--sage-pale);color:var(--sage);padding:.15rem .55rem;border-radius:20px;font-size:.78rem;border:1px solid var(--sage-light);}
-    .oil-card.rare .matched-pill{background:var(--rare-light);color:var(--rare-color);border-color:#c4aee0;}
-    .oil-desc{font-size:.85rem;color:var(--text-light);line-height:1.6;border-top:1px solid #eef2ef;padding-top:.7rem;margin-top:.2rem;}
-    .oil-tips{margin-top:.7rem;font-size:.82rem;color:var(--gold);display:flex;align-items:flex-start;gap:.35rem;}
-    .no-match{text-align:center;padding:3rem 1rem;color:var(--text-light);font-size:1rem;}
-    .no-match .big-emoji{font-size:3rem;margin-bottom:1rem;display:block;}
-    .disclaimer{background:#fff8e8;border:1px solid var(--gold-light);border-radius:12px;padding:1rem 1.2rem;font-size:.82rem;color:#856a20;margin-top:2rem;}
-    .btn-reset{display:block;margin:1.5rem auto 0;padding:.6rem 1.8rem;background:none;border:2px solid var(--sage-light);border-radius:30px;color:var(--sage);font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .2s;}
-    .btn-reset:hover{background:var(--sage-pale);border-color:var(--sage);}
-    footer{text-align:center;padding:2rem;color:var(--text-light);font-size:.82rem;}
+    :root {
+      --sage:#6b8f71;--sage-light:#a8c5ad;--sage-pale:#e8f0e9;
+      --gold:#c9a84c;--gold-light:#f0d98a;--deep:#2c3e35;
+      --text:#2c3e35;--text-light:#6b7c73;--bg:#f5f7f5;--white:#fff;
+      --rare-color:#7b5ea7;--rare-light:#ede8f5;
+      --herb:#4a7c59;--herb-light:#b5d5c0;--herb-pale:#eaf4ed;--herb-rare:#2d5a45;
+      --nut:#c47d2e;--nut-light:#f0c080;--nut-pale:#fdf4e7;--nut-rare:#8b4a00;
+      --hom:#3a6a9e;--hom-light:#90b8d8;--hom-pale:#e6f0f8;--hom-rare:#1e3f60;
+      --shadow:0 4px 24px rgba(44,62,53,.10);--shadow-sm:0 2px 8px rgba(44,62,53,.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Noto Serif TC','Georgia',serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+    header{background:linear-gradient(135deg,var(--deep) 0%,#3d5c48 60%,var(--sage) 100%);color:white;text-align:center;padding:3rem 1.5rem 2.5rem;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+    header .subtitle{font-size:.9rem;letter-spacing:.15em;opacity:.75;text-transform:uppercase;margin-bottom:.8rem}
+    header h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;letter-spacing:.05em;margin-bottom:.6rem}
+    header p{font-size:1rem;opacity:.82;max-width:540px;margin:0 auto}
+    .leaf-icon{font-size:2.5rem;margin-bottom:.6rem;display:block}
+    .container{max-width:960px;margin:0 auto;padding:2rem 1.2rem}
+    .card{background:var(--white);border-radius:18px;box-shadow:var(--shadow);padding:2rem;margin-bottom:2rem}
+    .card h2{font-size:1.25rem;color:var(--deep);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem}
+    .search-wrap{position:relative;margin-bottom:1rem}
+    #symptom-search{width:100%;padding:.75rem 1.1rem .75rem 2.8rem;border:2px solid #d0dcd2;border-radius:12px;font-size:1rem;font-family:inherit;outline:none;transition:border-color .2s;background:var(--sage-pale)}
+    #symptom-search:focus{border-color:var(--sage);background:white}
+    .search-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--sage);font-size:1.1rem;pointer-events:none}
+    .cat-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+    .cat-tab{padding:.3rem .9rem;border:2px solid #d0dcd2;border-radius:30px;font-size:.85rem;cursor:pointer;transition:all .2s;background:white}
+    .cat-tab.active{background:var(--sage);color:white;border-color:var(--sage)}
+    .cat-tab:hover:not(.active){border-color:var(--sage-light);background:var(--sage-pale)}
+    .symptom-grid{display:flex;flex-wrap:wrap;gap:.55rem}
+    .symptom-chip{padding:.4rem 1rem;border:2px solid #d0dcd2;border-radius:30px;font-size:.9rem;cursor:pointer;user-select:none;transition:all .18s;background:white}
+    .symptom-chip:hover{border-color:var(--sage);background:var(--sage-pale)}
+    .symptom-chip.selected{background:var(--sage);color:white;border-color:var(--sage)}
+    .symptom-chip.hidden{display:none}
+    /* Custom symptom input */
+    .custom-input-section{margin-top:1.4rem;padding:1.1rem 1.2rem;background:#f9fbf9;border-radius:14px;border:2px dashed #c0d4c4}
+    .custom-input-label{font-size:.88rem;color:var(--text-light);margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem}
+    .custom-input-row{display:flex;gap:.7rem;align-items:center}
+    #custom-symptom-input{flex:1;padding:.6rem 1rem;border:2px solid #d0dcd2;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s}
+    #custom-symptom-input:focus{border-color:var(--sage);background:white}
+    .btn-add-custom{padding:.6rem 1.1rem;background:var(--sage);color:white;border:none;border-radius:10px;font-size:.9rem;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .2s}
+    .btn-add-custom:hover{background:#4a7558}
+    .custom-hint{font-size:.78rem;color:var(--text-light);margin-top:.5rem}
+    .selected-wrap{margin-top:1.2rem;padding:.8rem 1rem;background:var(--sage-pale);border-radius:12px;min-height:54px}
+    .selected-label{font-size:.8rem;color:var(--text-light);margin-bottom:.4rem}
+    .selected-pills{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+    .selected-pill{background:var(--sage);color:white;padding:.25rem .75rem .25rem .5rem;border-radius:20px;font-size:.85rem;display:flex;align-items:center;gap:.3rem}
+    .selected-pill.custom-pill{background:#4a7558}
+    .selected-pill button{background:none;border:none;color:white;cursor:pointer;font-size:.95rem;padding:0;line-height:1;opacity:.8}
+    .selected-pill button:hover{opacity:1}
+    .empty-hint{color:var(--text-light);font-size:.88rem;font-style:italic}
+    .btn-search{width:100%;margin-top:1.5rem;padding:.95rem;background:linear-gradient(135deg,var(--sage) 0%,#4a7558 100%);color:white;border:none;border-radius:14px;font-size:1.1rem;font-family:inherit;cursor:pointer;letter-spacing:.05em;transition:all .2s;box-shadow:0 4px 16px rgba(107,143,113,.3)}
+    .btn-search:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(107,143,113,.4)}
+    .btn-search:active{transform:translateY(0)}
+    .btn-search:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    #results{display:none}
+    .results-header{text-align:center;margin-bottom:1.5rem}
+    .results-header h2{font-size:1.4rem;color:var(--deep)}
+    .results-header p{color:var(--text-light);font-size:.9rem;margin-top:.3rem}
+    /* Modality tabs */
+    .modality-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;border-bottom:2px solid #e0ebe2;padding-bottom:.8rem}
+    .mod-tab{padding:.45rem 1.1rem;border:2px solid #d0dcd2;border-radius:30px;font-size:.9rem;cursor:pointer;transition:all .2s;background:white;display:flex;align-items:center;gap:.35rem}
+    .mod-tab.active-oil{background:var(--sage);color:white;border-color:var(--sage)}
+    .mod-tab.active-herb{background:var(--herb);color:white;border-color:var(--herb)}
+    .mod-tab.active-nut{background:var(--nut);color:white;border-color:var(--nut)}
+    .mod-tab.active-hom{background:var(--hom);color:white;border-color:var(--hom)}
+    .mod-tab:hover:not(.active-oil):not(.active-herb):not(.active-nut):not(.active-hom){background:#f5f7f5}
+    .modality-panel{display:none}
+    .modality-panel.active{display:block}
+    .section-title{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;color:var(--deep);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--sage-pale)}
+    .badge{background:var(--sage);color:white;padding:.15rem .6rem;border-radius:20px;font-size:.8rem}
+    .badge.rare{background:var(--rare-color)}
+    .badge.herb-badge{background:var(--herb)}
+    .badge.herb-rare{background:var(--herb-rare)}
+    .badge.nut-badge{background:var(--nut)}
+    .badge.nut-rare{background:var(--nut-rare)}
+    .badge.hom-badge{background:var(--hom)}
+    .badge.hom-rare{background:var(--hom-rare)}
+    .oils-grid{display:grid;gap:1.2rem;grid-template-columns:1fr}
+    @media(min-width:640px){.oils-grid{grid-template-columns:1fr 1fr}}
+    /* Oil cards */
+    .oil-card{border:2px solid #e0ebe2;border-radius:16px;padding:1.3rem;background:white;transition:all .2s;position:relative;overflow:hidden}
+    .oil-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--sage),var(--sage-light))}
+    .oil-card.rare::before{background:linear-gradient(90deg,var(--rare-color),#b08ed4)}
+    .oil-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--sage-light)}
+    .oil-card.rare:hover{border-color:#c4aee0}
+    /* Herb cards */
+    .herb-card{border:2px solid #c5dfc8;border-radius:16px;padding:1.3rem;background:white;transition:all .2s;position:relative;overflow:hidden}
+    .herb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--herb),var(--herb-light))}
+    .herb-card.rare::before{background:linear-gradient(90deg,var(--herb-rare),#5a9e78)}
+    .herb-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--herb-light)}
+    /* Nutrient cards */
+    .nut-card{border:2px solid #f0d080;border-radius:16px;padding:1.3rem;background:white;transition:all .2s;position:relative;overflow:hidden}
+    .nut-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--nut),var(--nut-light))}
+    .nut-card.rare::before{background:linear-gradient(90deg,var(--nut-rare),#c47d2e)}
+    .nut-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--nut-light)}
+    /* Homeo cards */
+    .hom-card{border:2px solid #90b8d8;border-radius:16px;padding:1.3rem;background:white;transition:all .2s;position:relative;overflow:hidden}
+    .hom-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--hom),var(--hom-light))}
+    .hom-card.rare::before{background:linear-gradient(90deg,var(--hom-rare),#3a6a9e)}
+    .hom-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--hom-light)}
+    .oil-rank{position:absolute;top:.8rem;right:.8rem;font-size:.7rem;color:var(--text-light)}
+    .oil-emoji{font-size:2rem;margin-bottom:.5rem;display:block}
+    .oil-name-zh{font-size:1.15rem;font-weight:700;color:var(--deep)}
+    .oil-name-en{font-size:.82rem;color:var(--text-light);font-style:italic;margin-bottom:.5rem}
+    .oil-latin{font-size:.75rem;color:#999;margin-bottom:.8rem}
+    .score-bar-wrap{margin-bottom:.8rem}
+    .score-label{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text-light);margin-bottom:.3rem}
+    .score-bar{height:6px;border-radius:3px;background:#e8ede9;overflow:hidden}
+    .score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--sage),var(--sage-light));transition:width .6s cubic-bezier(.25,.8,.25,1)}
+    .herb-card .score-fill{background:linear-gradient(90deg,var(--herb),var(--herb-light))}
+    .nut-card .score-fill{background:linear-gradient(90deg,var(--nut),var(--nut-light))}
+    .hom-card .score-fill{background:linear-gradient(90deg,var(--hom),var(--hom-light))}
+    .oil-card.rare .score-fill{background:linear-gradient(90deg,var(--rare-color),#b08ed4)}
+    .herb-card.rare .score-fill{background:linear-gradient(90deg,var(--herb-rare),#5a9e78)}
+    .nut-card.rare .score-fill{background:linear-gradient(90deg,var(--nut-rare),#c47d2e)}
+    .hom-card.rare .score-fill{background:linear-gradient(90deg,var(--hom-rare),#3a6a9e)}
+    .matched-symptoms{margin-bottom:.8rem}
+    .matched-label{font-size:.78rem;color:var(--text-light);margin-bottom:.3rem}
+    .matched-pills{display:flex;flex-wrap:wrap;gap:.3rem}
+    .matched-pill{background:var(--sage-pale);color:var(--sage);padding:.15rem .55rem;border-radius:20px;font-size:.78rem;border:1px solid var(--sage-light)}
+    .herb-card .matched-pill{background:var(--herb-pale);color:var(--herb);border-color:var(--herb-light)}
+    .nut-card .matched-pill{background:var(--nut-pale);color:var(--nut);border-color:var(--nut-light)}
+    .hom-card .matched-pill{background:var(--hom-pale);color:var(--hom);border-color:var(--hom-light)}
+    .oil-desc{font-size:.85rem;color:var(--text-light);line-height:1.6;border-top:1px solid #eef2ef;padding-top:.7rem;margin-top:.2rem}
+    .oil-tips{margin-top:.7rem;font-size:.82rem;color:var(--gold);display:flex;align-items:flex-start;gap:.35rem}
+    .herb-card .oil-tips{color:var(--herb)}
+    .nut-card .oil-tips{color:var(--nut)}
+    .hom-card .oil-tips{color:var(--hom)}
+    .no-match{text-align:center;padding:3rem 1rem;color:var(--text-light);font-size:1rem}
+    .no-match .big-emoji{font-size:3rem;margin-bottom:1rem;display:block}
+    .disclaimer{background:#fff8e8;border:1px solid var(--gold-light);border-radius:12px;padding:1rem 1.2rem;font-size:.82rem;color:#856a20;margin-top:2rem}
+    .btn-reset{display:block;margin:1.5rem auto 0;padding:.6rem 1.8rem;background:none;border:2px solid var(--sage-light);border-radius:30px;color:var(--sage);font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .2s}
+    .btn-reset:hover{background:var(--sage-pale);border-color:var(--sage)}
+    footer{text-align:center;padding:2rem;color:var(--text-light);font-size:.82rem}
+    .modality-section{margin-bottom:2rem}
   </style>
 </head>
 <body>
 <header>
   <span class="leaf-icon">🌿</span>
-  <div class="subtitle">Aromatherapy Oil Finder</div>
-  <h1>芳香療法精油症狀搜尋</h1>
-  <p>根據您的症狀，從芳療資料庫中找出最適合的精油推薦</p>
+  <div class="subtitle">Natural Remedy Finder</div>
+  <h1>自然療法症狀搜尋</h1>
+  <p>輸入您的症狀，從資料庫中找出最適合的精油、草藥、營養素與順勢製劑推薦</p>
 </header>
 <div class="container">
   <div class="card" id="step1">
@@ -103,66 +169,348 @@
       <div class="cat-tab" data-cat="energy">能量/循環</div>
     </div>
     <div class="symptom-grid" id="symptom-grid"></div>
+    <!-- Custom symptom input -->
+    <div class="custom-input-section">
+      <div class="custom-input-label">✏️ 其他症狀（自由輸入）</div>
+      <div class="custom-input-row">
+        <input type="text" id="custom-symptom-input" placeholder="輸入自訂症狀，例如：腳底疼痛" autocomplete="off" />
+        <button class="btn-add-custom" onclick="addCustomSymptom()">＋ 加入</button>
+      </div>
+      <div class="custom-hint">💡 也可用「，」分隔一次輸入多個症狀，或按 Enter 鍵加入</div>
+    </div>
     <div class="selected-wrap">
       <div class="selected-label">已選擇的症狀：</div>
-      <div class="selected-pills" id="selected-pills"><span class="empty-hint">尚未選擇任何症狀…</span></div>
+      <div class="selected-pills" id="selected-pills">
+        <span class="empty-hint">尚未選擇任何症狀…</span>
+      </div>
     </div>
-    <button class="btn-search" id="btn-find" onclick="findOils()" disabled>🔍 搜尋最適合的精油</button>
+    <button class="btn-search" id="btn-find" onclick="findAll()" disabled>🔍 搜尋最適合的自然療法</button>
   </div>
+
   <div id="results">
-    <div class="results-header"><h2>🌸 精油推薦結果</h2><p id="results-desc"></p></div>
-    <div id="common-section" style="margin-bottom:2rem;">
-      <div class="section-title">🌿 常見精油推薦 <span class="badge">Top 4</span></div>
-      <div class="oils-grid" id="common-grid"></div>
+    <div class="results-header">
+      <h2>🌱 自然療法推薦結果</h2>
+      <p id="results-desc"></p>
     </div>
-    <div id="rare-section" style="margin-bottom:2rem;">
-      <div class="section-title">💎 罕見精油推薦 <span class="badge rare">Top 4</span></div>
-      <div class="oils-grid" id="rare-grid"></div>
+    <div class="modality-tabs" id="modality-tabs">
+      <div class="mod-tab active-oil" data-mod="oil" onclick="switchMod('oil')">🌸 精油</div>
+      <div class="mod-tab" data-mod="herb" onclick="switchMod('herb')">🌿 草藥</div>
+      <div class="mod-tab" data-mod="nut" onclick="switchMod('nut')">💊 營養素</div>
+      <div class="mod-tab" data-mod="hom" onclick="switchMod('hom')">💧 順勢製劑</div>
     </div>
-    <div class="disclaimer">⚕️ 本建議僅供參考，精油無法取代正規醫療診斷與治療。孕婦、兒童及特定疾病患者使用前請諮詢醫師或合格芳療師。精油皆需適當稀釋後使用。</div>
+    </div>
+    <!-- Oil panel -->
+    <div class="modality-panel active" id="panel-oil">
+      <div class="modality-section">
+        <div class="section-title">🌿 常見精油推薦 <span class="badge">Top 4</span></div>
+        <div class="oils-grid" id="oil-common-grid"></div>
+      </div>
+      <div class="modality-section">
+        <div class="section-title">💎 罕見精油推薦 <span class="badge rare">Top 4</span></div>
+        <div class="oils-grid" id="oil-rare-grid"></div>
+      </div>
+    </div>
+    <!-- Herb panel -->
+    <div class="modality-panel" id="panel-herb">
+      <div class="modality-section">
+        <div class="section-title">🌿 常用草藥推薦 <span class="badge herb-badge">Top 4</span></div>
+        <div class="oils-grid" id="herb-common-grid"></div>
+      </div>
+      <div class="modality-section">
+        <div class="section-title">🌱 罕見草藥推薦 <span class="badge herb-rare">Top 4</span></div>
+        <div class="oils-grid" id="herb-rare-grid"></div>
+      </div>
+    </div>
+    <!-- Nutrient panel -->
+    <div class="modality-panel" id="panel-nut">
+      <div class="modality-section">
+        <div class="section-title">💊 常用營養素推薦 <span class="badge nut-badge">Top 4</span></div>
+        <div class="oils-grid" id="nut-common-grid"></div>
+      </div>
+      <div class="modality-section">
+        <div class="section-title">⚗️ 罕見/進階營養素推薦 <span class="badge nut-rare">Top 4</span></div>
+        <div class="oils-grid" id="nut-rare-grid"></div>
+      </div>
+    </div>
+    <!-- Homeopathy panel -->
+    <div class="modality-panel" id="panel-hom">
+      <div class="modality-section">
+        <div class="section-title">💧 常用順勢製劑推薦 <span class="badge hom-badge">Top 4</span></div>
+        <div class="oils-grid" id="hom-common-grid"></div>
+      </div>
+      <div class="modality-section">
+        <div class="section-title">🔬 罕見順勢製劑推薦 <span class="badge hom-rare">Top 4</span></div>
+        <div class="oils-grid" id="hom-rare-grid"></div>
+      </div>
+    </div>
+    <div class="disclaimer">⚕️ 本建議僅供學習參考，無法取代正規醫療診斷與治療。孕婦、兒童及特定疾病患者使用任何療法前請先諮詢醫師。資料來源自 Obsidian 醫療知識庫，包含肯園課程、台灣芳香醫學醫學會、順勢療法課程、Kinesiology Institute 課程。</div>
     <button class="btn-reset" onclick="resetSearch()">← 重新搜尋</button>
   </div>
 </div>
-<footer>資料來源：肯園課程、台灣芳香醫學醫學會、芳泉講座、疼痛芳香醫學 · 僅供教育參考用途</footer>
+<footer>資料來源：肯園課程、台灣芳香醫學醫學會、順勢療法全方位實作班、Kinesiology Institute · 僅供教育參考用途</footer>
 <script>
+// ─── ESSENTIAL OILS ───────────────────────────────────────
 const oils=[
-  {id:'lavender',rarity:'common',nameZh:'真正薰衣草',nameEn:'Lavender',latin:'Lavandula angustifolia',emoji:'💜',symptoms:['焦慮','壓力','失眠','頭痛','肌肉緊繃','皮膚敏感','過敏反應','情緒不穩','神經緊張','憂鬱','傷口修復','月經不適'],desc:'最溫和全面的精油，適合各年齡使用。具優異的鎮靜、抗菌與促修復特性。肯園課程強調其降低神經警覺性的作用。',usage:'稀釋2%塗抹後頸、手腕，或擴香。與依蘭、橙花搭配效果更佳。'},
-  {id:'peppermint',rarity:'common',nameZh:'胡椒薄荷',nameEn:'Peppermint',latin:'Mentha piperita',emoji:'🌿',symptoms:['頭痛','噁心','消化不良','疲勞','體感止痛','鼻竇阻塞','注意力不集中','肌肉痠痛','胃脹氣'],desc:'薄荷醇含量高，具快速局部涼感與止痛效果。透過TRP通道調節發揮止痛作用，肯園疼痛芳香醫學課程首選止痛精油。',usage:'稀釋後塗抹痛點或太陽穴（避開眼部）。皮膚敏感者降低至1%以下濃度。'},
-  {id:'bergamot',rarity:'common',nameZh:'佛手柑',nameEn:'Bergamot',latin:'Citrus bergamia',emoji:'🍋',symptoms:['焦慮','憂鬱','壓力','情緒低落','自信不足','社交恐懼','悲傷','過度憂慮','睡前緊繃'],desc:'「情緒精油」代表。台灣芳香醫學醫學會課程指出佛手柑能有效提振情緒、緩解焦慮，特別適合情緒因素引起的身心症狀。',usage:'光敏感，外用需選去光敏素版本。擴香效果極佳，可與薰衣草、橙花搭配。'},
-  {id:'rosemary',rarity:'common',nameZh:'迷迭香（樟腦型）',nameEn:'Rosemary CT Camphor',latin:'Rosmarinus officinalis',emoji:'🌱',symptoms:['肌肉痠痛','局部循環不良','記憶力減退','腦霧','疲勞','注意力不集中','筋膜緊繃','關節僵硬'],desc:'肯園足底筋膜炎配方核心精油，具優異的循環促進與局部張力調節效果。台灣芳香醫學醫學會指其具神經保護潛力。',usage:'稀釋3%塗抹患處或頭皮。高血壓、癲癇患者及孕婦避免使用樟腦型。'},
-  {id:'eucalyptus',rarity:'common',nameZh:'藍膠尤加利',nameEn:'Eucalyptus',latin:'Eucalyptus globulus',emoji:'🫁',symptoms:['鼻竇阻塞','呼吸道問題','感冒','喉嚨痛','免疫力低下','頭部沉重','咳嗽','環境淨化'],desc:'1,8-桉油醇含量高，具強力呼吸道通暢效果。研究顯示其具抗菌、抗病毒及調節免疫功效。',usage:'擴香或稀釋後塗抹胸口、背部。避免3歲以下兒童使用。'},
-  {id:'frankincense',rarity:'common',nameZh:'乳香',nameEn:'Frankincense',latin:'Boswellia sacra',emoji:'🌟',symptoms:['慢性發炎','免疫調節','皮膚老化','焦慮','冥想/靈性','關節疼痛','壓力','老傷疤痕','腫瘤輔助照護'],desc:'「精油之王」。台灣芳香醫學醫學會癌症輔助課程指出，乳香的倍半萜烯類成分能影響細胞訊號傳遞，具多面向抗發炎與免疫調節作用。',usage:'稀釋2-3%全身使用。冥想時擴香可幫助靜心。與沒藥搭配效果更佳。'},
-  {id:'geranium',rarity:'common',nameZh:'天竺葵',nameEn:'Geranium',latin:'Pelargonium graveolens',emoji:'🌸',symptoms:['荷爾蒙失調','月經不適','更年期症狀','情緒波動','皮膚出油','水腫','淋巴循環差','焦慮','經前症候群','皮膚乾燥'],desc:'「荷爾蒙平衡精油」代表。具類雌激素的植物化學特性，特別適合女性荷爾蒙相關症狀，同時具優異皮膚調理效果。',usage:'稀釋2%塗抹腹部、下背部或淋巴引流路徑。擴香有助情緒穩定。'},
-  {id:'teatree',rarity:'common',nameZh:'茶樹',nameEn:'Tea Tree',latin:'Melaleuca alternifolia',emoji:'🌲',symptoms:['皮膚感染','痘痘','頭皮屑','口腔問題','免疫力低下','傷口修復','環境消毒'],desc:'廣譜抗菌、抗真菌精油。大量臨床研究支持其對多種皮膚感染的效果，是芳療師必備基礎精油。',usage:'可少量原液點塗痘痘，或稀釋2%用於感染皮膚。不可內服。'},
-  {id:'helichrysum',rarity:'rare',nameZh:'義大利永久花',nameEn:'Helichrysum',latin:'Helichrysum italicum',emoji:'🌼',symptoms:['瘀傷','老傷疤痕','慢性疼痛','神經痛','皮膚老化','組織修復','肌腱韌帶損傷','慢性發炎','運動傷害後修復'],desc:'肯園疼痛芳香醫學課程中列為「慢性修復期支持」精油。義大利酮含量賦予其獨特促修復功效，對陳年疤痕、瘀青與神經再生有顯著作用。',usage:'稀釋2%塗抹患處，建議使用山金車浸泡油為基底。避免孕婦使用。'},
-  {id:'copaiba',rarity:'rare',nameZh:'古巴香脂',nameEn:'Copaiba',latin:'Copaifera officinalis',emoji:'🫐',symptoms:['慢性疼痛','關節疼痛','肌肉痠痛','慢性發炎','焦慮','肝臟保護','腸道炎症','腫瘤輔助照護'],desc:'含高達53%的β-丁香油烴。2025年最新研究顯示β-丁香油烴可減緩肝臟纖維化，是近年最受矚目的抗炎精油成分。肯園肝膽解毒課程首推。',usage:'稀釋3%局部塗抹。可配合乳香、薰衣草使用增強效果。'},
-  {id:'german-chamomile',rarity:'rare',nameZh:'德國洋甘菊',nameEn:'German Chamomile',latin:'Matricaria chamomilla',emoji:'🌼',symptoms:['慢性發炎','濕疹','神經痛','情緒憤怒','過敏性皮膚','消化道炎症','關節疼痛','皮膚搔癢'],desc:'天藍烴含量高，呈深藍色。對皮膚和消化道的抗炎效果在精油中無出其右，肯園足底筋膜炎配方列為「發炎與周邊神經敏感支持」精油。',usage:'稀釋1-2%，適合敏感型皮膚和慢性炎症病患。通常混合使用。'},
-  {id:'valerian',rarity:'rare',nameZh:'纈草',nameEn:'Valerian',latin:'Valeriana officinalis',emoji:'🌙',symptoms:['失眠','焦慮','神經緊張','創傷後壓力','自律神經失調','恐慌發作','過度思慮','心神不寧','肌肉痙攣'],desc:'台灣芳香醫學醫學會課程推薦，能「讓整個人的氣血安定」。特別適合長期失眠、高度焦慮及自律神經失調患者。',usage:'少量擴香（每次1-2滴）或稀釋1%塗抹太陽穴、後頸。可與薰衣草搭配柔和氣味。'},
-  {id:'clary-sage',rarity:'rare',nameZh:'快樂鼠尾草',nameEn:'Clary Sage',latin:'Salvia sclarea',emoji:'🌿',symptoms:['更年期症狀','荷爾蒙失調','月經不適','失眠','壓力','情緒波動','子宮相關不適','自信不足','慢性疲勞'],desc:'含獨特的快樂鼠尾草醇，具強效類雌激素作用。特別適合更年期、月經不規則和荷爾蒙相關情緒問題。',usage:'孕婦禁用。稀釋2%塗抹下腹部，或低濃度擴香。'},
-  {id:'bay-laurel',rarity:'rare',nameZh:'月桂',nameEn:'Bay Laurel',latin:'Laurus nobilis',emoji:'🏅',symptoms:['淋巴循環差','免疫力低下','關節疼痛','自信不足','創傷後壓力','自我表達困難','感冒','耳鼻喉問題'],desc:'2025年台灣芳香醫學醫學會年會強調月桂在促進自我表達與自信方面的效果，同時其1,8-桉油醇及丁香酚組合賦予強效免疫支持。',usage:'稀釋2%塗抹頸部淋巴區域及胸口。情緒用途可擴香，幫助突破內在限制。'},
-  {id:'palo-santo',rarity:'rare',nameZh:'秘魯聖木',nameEn:'Palo Santo',latin:'Bursera graveolens',emoji:'🪵',symptoms:['靈性凈化','慢性壓力','情緒創傷','冥想/靈性','環境淨化','自律神經失調'],desc:'2025年台灣芳香醫學醫學會年會羅醫師工作坊推薦的「驅邪淨化」精油。在南美洲已有數百年神聖使用歷史，有助深層放鬆與靈性清明。',usage:'擴香使用，或塗抹於脈輪點（稀釋3%）。適合冥想前後使用。'},
-  {id:'myrrh',rarity:'rare',nameZh:'沒藥',nameEn:'Myrrh',latin:'Commiphora myrrha',emoji:'🌿',symptoms:['皮膚老化','慢性皮膚病','口腔問題','傷口修復','冥想/靈性','肌膚乾燥','情緒創傷'],desc:'芳香療法最古老精油之一。具高度樹脂性，特別適合慢性、深層的皮膚及黏膜問題。台灣芳香醫學會課程中用於協助個案「落地」的靈性支持。',usage:'黏稠，需與流動性基底油稀釋至2%使用。可搭配乳香增強效果。'},
-  {id:'cardamom',rarity:'rare',nameZh:'荳蔻',nameEn:'Cardamom',latin:'Elettaria cardamomum',emoji:'🫚',symptoms:['消化不良','噁心','胃痙攣','情緒壓抑','自我接納困難','慢性壓力','情緒低落'],desc:'台灣芳香醫學醫學會課程描述荳蔻能「幫助隨遇而安、化解覺得自己必須做錯事才會生病的感受」。特別適合情緒壓抑與自我批判型患者。',usage:'稀釋2%塗抹腹部。與苦橙葉、佛手柑搭配提振情緒。'},
-  {id:'angelica-root',rarity:'rare',nameZh:'歐白芷根',nameEn:'Angelica Root',latin:'Angelica archangelica',emoji:'🌾',symptoms:['神經衰弱','慢性疲勞','免疫力低下','長期創傷','過度思慮','悲傷','自律神經失調','消化虛弱'],desc:'被稱為「天使之草」，適合極度虛耗、神經系統長期超載的狀態。現代研究支持其強化消化與神經系統的功效。',usage:'光敏感精油，外用後避免日曬。稀釋1-2%，建議夜間使用。'},
-  {id:'cistus',rarity:'rare',nameZh:'岩玫瑰',nameEn:'Cistus (Rock Rose)',latin:'Cistus ladanifer',emoji:'🌹',symptoms:['免疫力低下','病毒感染','傷口修復','皮膚老化','情緒創傷','恐懼','慢性皮膚病'],desc:'具強大抗病毒特性，被認為是免疫系統的「特種部隊」。在情緒層面適合從深層恐懼和創傷中修復的人。',usage:'稀釋2%局部使用，或與橙花、乳香搭配護膚。'},
-  {id:'virginia-cedarwood',rarity:'rare',nameZh:'維吉尼亞雪松',nameEn:'Virginia Cedarwood',latin:'Juniperus virginiana',emoji:'🌲',symptoms:['慢性壓力','注意力不集中','淋巴循環差','呼吸道問題','自律神經失調','疲勞'],desc:'肯園肝膽排毒課程提及其具抑制CYP450的防癌輔助功能。其木質香氣有強力「落地」效果，適合情緒浮動、難以靜心的人。',usage:'稀釋2-3%塗抹背部脊椎兩側或腳底，擴香適合情緒調節。'},
-  {id:'juniper',rarity:'rare',nameZh:'杜松子',nameEn:'Juniper Berry',latin:'Juniperus communis',emoji:'🫐',symptoms:['水腫','局部循環不良','關節疼痛','肝臟保護','肌肉痠痛'],desc:'肯園足底筋膜炎配方中的「局部循環與積水代謝」精油。具強力利尿及促進淋巴循環效果。',usage:'稀釋2%塗抹水腫部位並按摩引流。腎臟疾病患者慎用。'}
+  {id:'lavender',rarity:'common',nameZh:'真正薰衣草',nameEn:'Lavender',latin:'Lavandula angustifolia',emoji:'💜',
+   symptoms:['焦慮','壓力','失眠','頭痛','肌肉緊繃','皮膚敏感','燒傷','過敏反應','情緒不穩','神經緊張','憂鬱','傷口修復','高血壓','月經不適'],
+   desc:'最溫和全面的精油，具優異的鎮靜、抗菌與促修復特性，被廣泛用於身心平衡。肯園課程強調其降低神經警覺性的作用。',
+   usage:'稀釋2%塗抹後頸、手腕，或擴香。與依蘭、橙花搭配效果更佳。'},
+  {id:'peppermint',rarity:'common',nameZh:'胡椒薄荷',nameEn:'Peppermint',latin:'Mentha piperita',emoji:'🌿',
+   symptoms:['頭痛','噁心','消化不良','疲勞','體感止痛','搔癢','發燒','鼻竇阻塞','注意力不集中','肌肉痠痛','熱潮紅','胃脹氣'],
+   desc:'薄荷醇含量高，具快速的局部涼感與止痛效果。透過TRP通道調節發揮止痛作用，肯園疼痛芳香醫學列為首選止痛精油之一。',
+   usage:'稀釋後塗抹痛點或太陽穴（避開眼部）。皮膚敏感者降低至1%以下濃度。'},
+  {id:'bergamot',rarity:'common',nameZh:'佛手柑',nameEn:'Bergamot',latin:'Citrus bergamia',emoji:'🍋',
+   symptoms:['焦慮','憂鬱','壓力','情緒低落','食慾失調','皮膚感染','心情不穩','自信不足','睡前緊繃','社交恐懼','悲傷','過度憂慮'],
+   desc:'被稱為「情緒精油」。台灣芳香醫學醫學會課程指出佛手柑能有效提振情緒、緩解焦慮，特別適合情緒因素引起的身心症狀。',
+   usage:'光敏感，外用需選「去光敏素」版本。擴香效果極佳，可與薰衣草、橙花搭配。'},
+  {id:'rosemary',rarity:'common',nameZh:'迷迭香（樟腦型）',nameEn:'Rosemary CT camphor',latin:'Rosmarinus officinalis CT camphor',emoji:'🌱',
+   symptoms:['肌肉痠痛','局部循環不良','記憶力減退','腦霧','疲勞','頭髮稀疏','低血壓','運動前暖身','注意力不集中','筋膜緊繃','關節僵硬'],
+   desc:'肯園足底筋膜炎治療配方核心精油，具優異的循環促進與局部張力調節效果。台灣芳香醫學醫學會指其具神經保護潛力。',
+   usage:'稀釋3%塗抹患處或頭皮按摩。高血壓、癲癇患者及孕婦避免使用。'},
+  {id:'eucalyptus',rarity:'common',nameZh:'藍膠尤加利',nameEn:'Eucalyptus',latin:'Eucalyptus globulus',emoji:'🫁',
+   symptoms:['鼻竇阻塞','呼吸道感染','感冒','喉嚨痛','肌肉痠痛','免疫力低下','頭部沉重','環境淨化','注意力不集中','咳嗽'],
+   desc:'1,8-桉油醇含量高，具強力的呼吸道通暢效果。研究顯示其具抗菌、抗病毒及調節免疫功效，是感冒季節重要的精油。',
+   usage:'擴香或稀釋後塗抹胸口、背部。避免3歲以下兒童使用。'},
+  {id:'frankincense',rarity:'common',nameZh:'乳香',nameEn:'Frankincense',latin:'Boswellia sacra',emoji:'🌟',
+   symptoms:['慢性發炎','免疫調節','皮膚老化','焦慮','冥想靈性','呼吸道問題','關節疼痛','壓力','抗老化','情緒清明','老傷疤痕','腫瘤輔助照護'],
+   desc:'「精油之王」。台灣芳香醫學醫學會癌症輔助課程指出，乳香的倍半萜烯類成分能影響細胞訊號傳遞，具多面向的抗發炎與免疫調節作用。',
+   usage:'稀釋2-3%全身使用。冥想時擴香可幫助靜心。與沒藥、欖香脂搭配效果更佳。'},
+  {id:'geranium',rarity:'common',nameZh:'天竺葵',nameEn:'Geranium',latin:'Pelargonium graveolens',emoji:'🌸',
+   symptoms:['荷爾蒙失調','月經不適','更年期症狀','情緒波動','皮膚出油','水腫','淋巴循環差','焦慮','經前症候群','傷口修復','皮膚乾燥'],
+   desc:'「荷爾蒙平衡精油」代表。具類似雌激素的植物化學特性，特別適合女性荷爾蒙相關症狀，同時具優異的皮膚調理效果。',
+   usage:'稀釋2%塗抹於腹部、下背部或淋巴引流路徑。擴香有助情緒穩定。'},
+  {id:'teatree',rarity:'common',nameZh:'茶樹',nameEn:'Tea Tree',latin:'Melaleuca alternifolia',emoji:'🌲',
+   symptoms:['皮膚感染','痘痘','頭皮屑','指甲真菌','口腔問題','免疫力低下','小傷口','腳氣','環境消毒','婦科感染'],
+   desc:'廣譜抗菌、抗真菌精油，是天然家庭消毒首選。大量臨床研究支持其對多種皮膚感染的效果，是芳療師必備基礎精油。',
+   usage:'可少量原液點塗痘痘，或稀釋2%用於感染皮膚。不可內服。'},
+  {id:'helichrysum',rarity:'rare',nameZh:'義大利永久花',nameEn:'Helichrysum',latin:'Helichrysum italicum',emoji:'🌼',
+   symptoms:['瘀傷','老傷疤痕','慢性疼痛','神經痛','皮膚老化','組織修復','肌腱韌帶損傷','慢性發炎','運動傷害後修復','靜脈曲張'],
+   desc:'肯園疼痛芳香醫學課程列為「慢性修復期支持」精油。義大利酮的含量賦予其獨特的促修復功效，對陳年疤痕、瘀青與神經再生有顯著作用。',
+   usage:'稀釋2%塗抹患處，建議使用山金車浸泡油為基底。避免孕婦使用。'},
+  {id:'copaiba',rarity:'rare',nameZh:'古巴香脂',nameEn:'Copaiba',latin:'Copaifera officinalis',emoji:'🫐',
+   symptoms:['慢性疼痛','關節疼痛','肌肉痠痛','慢性發炎','焦慮','皮膚問題','肝臟保護','神經系統支持','腸道炎症','腫瘤輔助照護'],
+   desc:'含高達53%的β-丁香油烴。2025年最新研究顯示β-丁香油烴可減緩肝臟纖維化、降低炎症反應，是近年最受矚目的抗炎精油成分。',
+   usage:'稀釋3%局部塗抹，或加入基礎按摩油。可配合乳香、薰衣草使用。'},
+  {id:'german-chamomile',rarity:'rare',nameZh:'德國洋甘菊',nameEn:'German Chamomile',latin:'Matricaria chamomilla',emoji:'🌼',
+   symptoms:['慢性發炎','過敏性皮膚','濕疹','神經痛','情緒憤怒','周邊神經敏感','消化道炎症','關節炎','紅腫熱痛','皮膚搔癢'],
+   desc:'天藍烴含量高，呈現深藍色。對皮膚和消化道的抗炎效果在精油中無出其右，肯園足底筋膜炎配方列為「發炎與周邊神經敏感支持」精油。',
+   usage:'非常昂貴，通常混合使用。稀釋1-2%，適合敏感型皮膚和慢性炎症病患。'},
+  {id:'valerian-eo',rarity:'rare',nameZh:'纈草',nameEn:'Valerian',latin:'Valeriana officinalis',emoji:'🌙',
+   symptoms:['失眠','焦慮','神經緊張','創傷後壓力','自律神經失調','恐慌發作','過度思慮','心神不寧','肌肉痙攣','驚嚇後症狀'],
+   desc:'台灣芳香醫學醫學會癌症課程推薦，能「讓整個人的氣血安定」。特別適合長期失眠、高度焦慮及自律神經失調的患者。',
+   usage:'少量擴香（每次1-2滴）或稀釋1%塗抹太陽穴、後頸。可與薰衣草、苦橙葉搭配。'},
+  {id:'clary-sage',rarity:'rare',nameZh:'快樂鼠尾草',nameEn:'Clary Sage',latin:'Salvia sclarea',emoji:'🌿',
+   symptoms:['更年期症狀','荷爾蒙失調','月經不適','失眠','壓力','情緒波動','子宮相關不適','泌乳問題','自信不足','慢性疲勞'],
+   desc:'含獨特的快樂鼠尾草醇，具強效的類雌激素作用。特別適合更年期、月經不規則和荷爾蒙相關情緒問題，是女性芳療師最珍視的精油之一。',
+   usage:'孕婦禁用。稀釋2%塗抹下腹部，或低濃度擴香。'},
+  {id:'cistus',rarity:'rare',nameZh:'岩玫瑰',nameEn:'Cistus (Rock Rose)',latin:'Cistus ladanifer',emoji:'🌹',
+   symptoms:['免疫力低下','病毒感染','傷口修復','皮膚老化','情緒創傷','恐懼','靈性成長','慢性皮膚病','過度免疫反應'],
+   desc:'具強大的抗病毒特性，被認為是免疫系統的「特種部隊」。在情緒層面，岩玫瑰適合需要從深層恐懼和創傷中修復的人。',
+   usage:'稀釋2%局部使用，或與橙花、乳香搭配護膚。'},
+  {id:'angelica-root',rarity:'rare',nameZh:'歐白芷根',nameEn:'Angelica Root',latin:'Angelica archangelica',emoji:'🌾',
+   symptoms:['神經衰弱','慢性疲勞','消化虛弱','免疫力低下','靈性保護','長期創傷','過度思慮','悲傷','自律神經失調'],
+   desc:'被稱為「天使之草」，適合極度虛耗、神經系統長期超載的狀態。歐洲傳統療癒中用於靈性保護與身體再生。',
+   usage:'光敏感精油，外用後避免日曬。稀釋1-2%，建議夜間使用。'},
+  {id:'palo-santo',rarity:'rare',nameZh:'秘魯聖木',nameEn:'Palo Santo',latin:'Bursera graveolens',emoji:'🪵',
+   symptoms:['靈性凈化','負面能量','慢性壓力','情緒創傷','睡前清心','冥想靈性','慢性疼痛','環境凈化','自律神經失調'],
+   desc:'2025年台灣芳香醫學醫學會年會羅醫師工作坊推薦的「驅邪淨化」精油。在南美洲已有數百年神聖使用歷史，有助深層放鬆與靈性清明。',
+   usage:'擴香使用，或塗抹於脈輪點（稀釋3%）。適合冥想前後。'}
 ];
 
+// ─── HERBS ───────────────────────────────────────────────
+const herbs=[
+  {id:'turmeric',rarity:'common',nameZh:'薑黃',nameEn:'Turmeric',latin:'Curcuma longa',emoji:'🟡',
+   symptoms:['慢性發炎','關節疼痛','消化不良','肝臟保護','肌肉痠痛','免疫力低下','憂鬱','腸道炎症','皮膚問題','抗氧化','老化'],
+   desc:'薑黃素（Curcumin）是最廣泛研究的天然抗炎物質之一。Kinesiology Institute課程指出薑黃能支持肝臟解毒、降低全身性炎症，並具神經保護潛力。',
+   usage:'建議配合黑胡椒（胡椒鹼）一起服用以提高吸收率20倍。每日500-2000mg薑黃素萃取。'},
+  {id:'ginger',rarity:'common',nameZh:'生薑',nameEn:'Ginger',latin:'Zingiber officinale',emoji:'🫚',
+   symptoms:['噁心','消化不良','胃脹氣','頭痛','關節疼痛','肌肉痠痛','感冒','免疫力低下','局部循環不良','月經不適','晨吐'],
+   desc:'含豐富的薑辣素（Gingerols）與薑烯酚（Shogaols），具強效的抗炎、促循環及止吐效果。Kinesiology Institute課程廣泛提及薑在消化與疼痛管理的應用。',
+   usage:'新鮮薑汁、薑茶或膠囊形式。孕婦止吐每日不超過1g。外用薑汁可促進局部循環。'},
+  {id:'echinacea',rarity:'common',nameZh:'紫錐花',nameEn:'Echinacea',latin:'Echinacea purpurea',emoji:'🌸',
+   symptoms:['感冒','免疫力低下','呼吸道感染','病毒感染','喉嚨痛','耳鼻喉問題','傷口修復','皮膚感染','發燒'],
+   desc:'最廣泛使用的免疫草藥之一。臨床研究顯示在感冒初期使用紫錐花可縮短病程1-1.5天，並顯著降低症狀嚴重度。',
+   usage:'感冒前驅期密集使用（每日3次），建議連續使用不超過8週。自體免疫疾病患者慎用。'},
+  {id:'garlic',rarity:'common',nameZh:'大蒜',nameEn:'Garlic',latin:'Allium sativum',emoji:'🧄',
+   symptoms:['免疫力低下','感冒','病毒感染','高血壓','高膽固醇','皮膚感染','抗菌','心血管問題','腸道問題','疲勞'],
+   desc:'Kinesiology Institute指出大蒜是最強效的天然抗菌食物之一。蒜素（Allicin）具廣譜抗菌、抗病毒特性，並支持心血管健康。',
+   usage:'每日1-2瓣新鮮大蒜，壓碎後靜置10分鐘使蒜素生成後食用。或使用熟成大蒜萃取物補充品。'},
+  {id:'licorice',rarity:'common',nameZh:'甘草根',nameEn:'Licorice Root',latin:'Glycyrrhiza glabra',emoji:'🤎',
+   symptoms:['喉嚨痛','呼吸道問題','消化不良','荷爾蒙失調','腎上腺疲勞','胃潰瘍','咳嗽','疲勞','抗病毒','抗炎'],
+   desc:'Kinesiology Institute課程中甘草根被列為支持腎上腺功能的重要草藥。甘草次酸（Glycyrrhizin）具強效抗病毒與抗炎特性，並能保護消化道黏膜。',
+   usage:'腎上腺疲勞可配合人參使用。注意長期高劑量可能引起血壓上升，高血壓患者使用去甘草甜素（DGL）版本。'},
+  {id:'astragalus',rarity:'common',nameZh:'黃耆（北芪）',nameEn:'Astragalus',latin:'Astragalus membranaceus',emoji:'🌿',
+   symptoms:['免疫力低下','疲勞','慢性疲勞','腎臟保養','肝臟保護','感冒','失眠','水腫','化療輔助','腫瘤輔助照護','心血管問題'],
+   desc:'中醫扶正固本的代表藥材。Kinesiology Institute課程指出黃耆能增強T細胞活性、提升NK細胞功能，對化療副作用有顯著的緩解效果。',
+   usage:'每日9-30g煎煮或使用萃取物。湯頭煮食亦可（加入排骨湯中熬煮）。效果需累積，建議長期服用。'},
+  {id:'peppermint-herb',rarity:'common',nameZh:'薄荷草',nameEn:'Peppermint Herb',latin:'Mentha piperita',emoji:'🌱',
+   symptoms:['頭痛','消化不良','噁心','胃脹氣','注意力不集中','肌肉痠痛','口腔問題','疲勞','腸躁症','過敏'],
+   desc:'薄荷草在傳統草藥中廣泛用於消化問題。腸溶包衣薄荷油膠囊已有RCT研究證實對腸躁症（IBS）有顯著效果，能減輕腹痛、腹脹。',
+   usage:'薄荷茶每日2-3杯。腸躁症可使用腸溶薄荷油膠囊180mg，餐前30分鐘服用。'},
+  {id:'dandelion',rarity:'common',nameZh:'蒲公英根',nameEn:'Dandelion Root',latin:'Taraxacum officinale',emoji:'🌼',
+   symptoms:['肝臟保護','消化不良','水腫','高膽固醇','腎臟保養','皮膚問題','便秘','消化虛弱','抗氧化','血糖調節'],
+   desc:'Kinesiology Institute課程將蒲公英根列為肝臟和消化系統的重要支持草藥。其苦味素能刺激膽汁分泌、促進消化，並具天然利尿效果。',
+   usage:'蒲公英根茶每日1-3杯，或使用萃取物膠囊。可搭配牛奶薊（奶薊）增強護肝效果。'},
+  {id:'ashwagandha',rarity:'rare',nameZh:'南非醉茄（印度人參）',nameEn:'Ashwagandha',latin:'Withania somnifera',emoji:'🌿',
+   symptoms:['慢性壓力','焦慮','疲勞','慢性疲勞','失眠','荷爾蒙失調','甲狀腺功能','免疫力低下','關節疼痛','抗老化','運動表現'],
+   desc:'Kinesiology Institute課程中列為最重要的適應原（Adaptogen）之一。大量RCT研究支持其降低皮質醇、改善睡眠品質、增強運動表現及甲狀腺功能的效果。',
+   usage:'每日300-600mg KSM-66或Sensoril萃取物，建議睡前服用。甲狀腺功能亢進患者慎用。'},
+  {id:'rhodiola',rarity:'rare',nameZh:'紅景天',nameEn:'Rhodiola',latin:'Rhodiola rosea',emoji:'🌺',
+   symptoms:['慢性疲勞','疲勞','壓力','焦慮','憂鬱','注意力不集中','腦霧','運動耐力','高山適應','記憶力減退'],
+   desc:'生長於高海拔嚴酷環境的適應原草藥。Kinesiology Institute課程指出紅景天素（Salidroside）能增強粒線體功能、提升腦部多巴胺與血清素水平。',
+   usage:'每日標準化萃取物（含3% salidroside）200-400mg。建議早晨空腹服用，循環使用（用6週停2週）。'},
+  {id:'st-john-wort',rarity:'rare',nameZh:'聖約翰草',nameEn:"St. John's Wort",latin:'Hypericum perforatum',emoji:'🌻',
+   symptoms:['憂鬱','焦慮','神經痛','情緒低落','季節性情感障礙','更年期情緒','失眠','慢性疲勞'],
+   desc:'Kinesiology Institute課程列為天然抗憂鬱草藥的代表。多項大型meta-analysis證實其對輕至中度憂鬱症效果與SSRIs相當，且副作用更少。',
+   usage:'每日標準化萃取物900mg（含0.3% hypericin），分3次服用。注意與多種藥物有交互作用（特別是抗憂鬱藥、避孕藥），服用前請諮詢醫師。'},
+  {id:'valerian-herb',rarity:'rare',nameZh:'纈草根（草藥）',nameEn:'Valerian Root',latin:'Valeriana officinalis',emoji:'🌙',
+   symptoms:['失眠','焦慮','神經緊張','肌肉痙攣','自律神經失調','恐慌發作','過度思慮','心神不寧','驚嚇後症狀'],
+   desc:'Kinesiology Institute課程中列為改善睡眠的代表草藥。纈草酸（Valerenic acid）通過增強GABA活性發揮鎮靜作用，研究顯示能縮短入睡時間並改善睡眠品質。',
+   usage:'睡前30-60分鐘服用標準化萃取物300-600mg。可連續使用4-6週。氣味較強烈，可配合西番蓮草（Passionflower）使用。'},
+  {id:'holy-basil',rarity:'rare',nameZh:'神聖羅勒（聖羅勒）',nameEn:'Holy Basil (Tulsi)',latin:'Ocimum sanctum',emoji:'🌿',
+   symptoms:['慢性壓力','焦慮','血糖調節','免疫力低下','發炎','呼吸道問題','情緒波動','注意力不集中','抗菌'],
+   desc:'Kinesiology Institute課程將Holy Basil列為重要的適應原草藥。在印度阿育吠陀傳統中被視為「神聖植物」，現代研究支持其抗壓、抗菌、血糖調節功效。',
+   usage:'每日聖羅勒茶2-3杯，或使用標準化萃取物膠囊500mg。可長期安全使用，無已知重大副作用。'},
+  {id:'ginkgo',rarity:'rare',nameZh:'銀杏',nameEn:'Ginkgo Biloba',latin:'Ginkgo biloba',emoji:'🍂',
+   symptoms:['記憶力減退','腦霧','注意力不集中','局部循環不良','頭痛','耳鳴','視力問題','老年認知退化','焦慮','憂鬱'],
+   desc:'Kinesiology Institute課程中強調銀杏能增加腦部和周邊血流量。多項研究支持銀杏在輕度認知障礙、耳鳴及視網膜循環問題的效果。',
+   usage:'每日標準化萃取物（EGb 761）120-240mg，分2次服用。建議至少服用4-6週才能評估效果。服用抗凝血藥物者請諮詢醫師。'}
+];
+
+// ─── NUTRIENTS ───────────────────────────────────────────
+const nutrients=[
+  {id:'magnesium',rarity:'common',nameZh:'鎂',nameEn:'Magnesium',latin:'Magnesium',emoji:'✨',
+   symptoms:['肌肉痙攣','失眠','焦慮','頭痛','偏頭痛','便秘','慢性疲勞','神經緊張','骨骼健康','心律不整','高血壓','經前症候群'],
+   desc:'Kinesiology Institute課程指出鎂參與體內超過300種酶促反應。現代人普遍缺乏鎂，缺乏症與失眠、肌肉痙攣、焦慮及偏頭痛密切相關。',
+   usage:'建議使用甘胺酸鎂或蘋果酸鎂（吸收率最佳）。每日200-400mg，睡前服用效果最好。腎功能不佳者請先諮詢醫師。'},
+  {id:'vitamin-d',rarity:'common',nameZh:'維生素D3',nameEn:'Vitamin D3',latin:'Cholecalciferol',emoji:'☀️',
+   symptoms:['免疫力低下','疲勞','憂鬱','骨骼健康','肌肉痠痛','感冒','自體免疫','情緒低落','睡眠品質差','癌症風險'],
+   desc:'Kinesiology Institute課程特別強調維生素D3不只是維生素，更是一種激素前體，影響免疫調節、情緒及基因表達。台灣人普遍缺乏。',
+   usage:'建議與維生素K2搭配服用。成人每日1000-5000 IU，配合脂肪吸收。最好定期檢測血中25-OH-D濃度，維持在50-80 ng/mL。'},
+  {id:'vitamin-c',rarity:'common',nameZh:'維生素C',nameEn:'Vitamin C',latin:'Ascorbic acid',emoji:'🍊',
+   symptoms:['免疫力低下','感冒','皮膚老化','疲勞','傷口修復','高壓力','抗氧化','靜脈曲張','牙齦問題','環境毒素'],
+   desc:'Kinesiology Institute課程列為最基本的免疫支持營養素。高劑量靜脈維生素C在整合醫學中廣泛用於感染性疾病和癌症輔助治療，口服維C能顯著縮短感冒病程。',
+   usage:'一般保健每日500-2000mg，分次服用（避免一次大量）。感冒時可增至4-8g/天。選擇緩釋型或脂質體C吸收更佳。'},
+  {id:'omega3',rarity:'common',nameZh:'Omega-3 脂肪酸',nameEn:'Omega-3 (EPA/DHA)',latin:'EPA & DHA',emoji:'🐟',
+   symptoms:['慢性發炎','關節疼痛','憂鬱','焦慮','心血管問題','腦霧','注意力不集中','皮膚乾燥','高三酸甘油酯','老年認知退化'],
+   desc:'EPA和DHA是最重要的抗炎脂肪酸。克服疼痛超營養工作坊指出Omega-3能有效降低前列腺素E2等促炎介質，對慢性疼痛和情緒障礙均有顯著幫助。',
+   usage:'每日EPA+DHA總量1-3g，隨餐服用減少魚腥味。選擇含分子蒸餾純化的魚油，確認無重金屬污染。'},
+  {id:'zinc',rarity:'common',nameZh:'鋅',nameEn:'Zinc',latin:'Zinc',emoji:'⚡',
+   symptoms:['免疫力低下','感冒','皮膚問題','痘痘','傷口修復','味覺嗅覺問題','荷爾蒙失調','不孕','前列腺問題','腸道問題'],
+   desc:'Kinesiology Institute課程中鋅被列為免疫系統最重要的礦物質之一，參與T細胞分化、傷口修復及睾酮合成。鋅缺乏在全球相當普遍。',
+   usage:'每日15-40mg，建議飯後服用（空腹易引起噁心）。選用較易吸收的甘胺酸鋅或吡啶甲酸鋅（Zinc picolinate）。'},
+  {id:'b-complex',rarity:'common',nameZh:'維生素B群',nameEn:'B Complex',latin:'B vitamins',emoji:'🔆',
+   symptoms:['疲勞','神經緊張','憂鬱','焦慮','記憶力減退','皮膚問題','口腔潰瘍','貧血','注意力不集中','荷爾蒙失調'],
+   desc:'Kinesiology Institute課程中B群被稱為「神經系統的燃料」。B1支持神經傳導、B3改善情緒、B6調節荷爾蒙、B12維護髓鞘、葉酸支持DNA合成。',
+   usage:'選擇活性化B群（如甲基葉酸、甲基B12）吸收更佳。早餐後服用。素食者特別需要補充B12。'},
+  {id:'probiotics',rarity:'common',nameZh:'益生菌',nameEn:'Probiotics',latin:'Lactobacillus & Bifidobacterium',emoji:'🦠',
+   symptoms:['腸道問題','免疫力低下','腸道炎症','過敏反應','憂鬱','焦慮','腸躁症','便秘','腹瀉','皮膚問題','腦霧'],
+   desc:'克服疼痛超營養工作坊及Kinesiology Institute均強調腸道菌相是身心健康的基礎。益生菌通過腸腦軸影響神經系統，研究顯示可改善焦慮、憂鬱及免疫功能。',
+   usage:'選擇多菌種（包含Lactobacillus和Bifidobacterium），活菌數至少100億CFU。隨餐服用保護率較高。抗生素療程後特別需要補充。'},
+  {id:'iron',rarity:'common',nameZh:'鐵',nameEn:'Iron',latin:'Iron',emoji:'🔴',
+   symptoms:['疲勞','貧血','頭暈','慢性疲勞','注意力不集中','心悸','月經量多','皮膚蒼白','指甲脆弱','運動耐力下降'],
+   desc:'Kinesiology Institute課程指出鐵缺乏是全球最常見的營養素缺乏症，特別在月經量多的女性。即使無貧血的鐵蛋白偏低也可能引起疲勞和認知功能下降。',
+   usage:'建議先抽血確認鐵蛋白和血鐵值再補充。選用甘胺酸鐵（吸收好、不便秘）。與維C同服可提高吸收率，避免與鈣同服。'},
+  {id:'coq10',rarity:'rare',nameZh:'輔酶Q10（CoQ10）',nameEn:'CoQ10 (Ubiquinol)',latin:'Ubiquinone/Ubiquinol',emoji:'⚗️',
+   symptoms:['慢性疲勞','疲勞','心血管問題','肌肉痠痛','偏頭痛','高血壓','化療副作用','老化','運動表現','腦霧'],
+   desc:'Kinesiology Institute課程強調CoQ10是粒線體電子傳遞鏈的核心成分，服用他汀類（Statins）降脂藥者必然缺乏CoQ10，補充後可顯著改善肌肉痠痛及疲勞。',
+   usage:'選用還原型（Ubiquinol）吸收率為氧化型的8倍。每日100-300mg，隨含脂肪的餐食服用。'},
+  {id:'glutathione',rarity:'rare',nameZh:'麩胱甘肽',nameEn:'Glutathione',latin:'Glutathione (GSH)',emoji:'🔬',
+   symptoms:['肝臟保護','環境毒素','重金屬排毒','皮膚老化','慢性疲勞','免疫力低下','神經退化','化療輔助','腫瘤輔助照護','抗氧化'],
+   desc:'Kinesiology Institute課程稱麩胱甘肽為「抗氧化之母」，是肝臟解毒的核心物質。克服疼痛超營養工作坊提到GSH對慢性發炎和神經退化性疾病的重要性。',
+   usage:'口服吸收率低，建議使用脂質體（Liposomal）形式或S-乙醯基麩胱甘肽（S-Acetyl Glutathione）。也可補充NAC作為前驅物。'},
+  {id:'nac',rarity:'rare',nameZh:'NAC（N-乙醯半胱氨酸）',nameEn:'N-Acetyl Cysteine',latin:'N-Acetylcysteine',emoji:'⚗️',
+   symptoms:['呼吸道問題','肺部問題','肝臟保護','環境毒素','強迫症','成癮行為','慢性發炎','免疫力低下','攝護腺問題','流感'],
+   desc:'Kinesiology Institute課程及整合功能醫學均強調NAC作為麩胱甘肽前驅物的重要性。研究支持其在慢性阻塞性肺病（COPD）、精神科及肝臟保護的多重功效。',
+   usage:'每日600-1800mg，分次服用。需配合充足水分攝取。與鋅協同效果更佳。'},
+  {id:'quercetin',rarity:'rare',nameZh:'槲皮素',nameEn:'Quercetin',latin:'Quercetin',emoji:'🟢',
+   symptoms:['過敏反應','慢性發炎','免疫力低下','高血壓','皮膚敏感','病毒感染','關節疼痛','心血管問題','抗氧化','癌症風險'],
+   desc:'Kinesiology Institute課程將槲皮素列為重要的抗組胺和抗病毒成分。Covid-19研究顯示槲皮素能抑制病毒與細胞受體的結合，並具強效的抗炎特性。',
+   usage:'每日500-1000mg，需搭配維生素C（10:1比例）以提高吸收率。或選用溴梅蛋白酶（Bromelain）複合配方。'},
+  {id:'selenium',rarity:'rare',nameZh:'硒',nameEn:'Selenium',latin:'Selenium',emoji:'💫',
+   symptoms:['甲狀腺問題','免疫力低下','抗氧化','癌症風險','不孕','心血管問題','重金屬排毒','皮膚問題','情緒低落'],
+   desc:'Kinesiology Institute課程強調硒是甲狀腺激素代謝所必需的輔因子，缺乏與橋本氏甲狀腺炎密切相關。研究支持硒在前列腺癌及大腸癌的預防潛力。',
+   usage:'每日100-200mcg，選用有機硒（Selenomethionine）吸收率最佳。注意硒毒性劑量與治療劑量相近，不建議超過400mcg/天。'},
+  {id:'melatonin',rarity:'rare',nameZh:'褪黑激素',nameEn:'Melatonin',latin:'Melatonin',emoji:'🌙',
+   symptoms:['失眠','睡眠週期紊亂','時差','輪班工作','睡眠品質差','免疫力低下','抗氧化','神經退化','腫瘤輔助照護','老化'],
+   desc:'超營養工作坊及整合醫學課程強調褪黑激素除了調節睡眠外，也是強力的抗氧化劑，在高劑量（20-300mg）時可支持癌症輔助治療，是整合腫瘤學新興研究方向。',
+   usage:'睡眠障礙建議低劑量（0.5-1mg）睡前30分鐘服用。高劑量的抗氧化/腫瘤用途需在醫師監督下使用。避免長期高劑量。'}
+];
+
+// ─── HOMEOPATHY ──────────────────────────────────────────
+const homeo=[
+  {id:'arnica',rarity:'common',nameZh:'山金車（阿尼卡）',nameEn:'Arnica montana',latin:'Arnica montana 30C/200C',emoji:'🌼',
+   symptoms:['瘀傷','創傷','肌肉痠痛','運動傷害後修復','手術前後','肌肉緊繃','疲勞後恢復','頭部撞傷','過度使用傷害','牙科治療'],
+   desc:'順勢療法最廣泛使用的製劑，源自楊景翔老師順勢全方位實作班PART I課程。是任何急性或慢性物理創傷後的第一選擇，能顯著加速瘀血吸收和組織修復。',
+   usage:'急性創傷後立即使用Arnica 200C，每15分鐘一次，連用3-4次。慢性使用Arnica 30C每日3次。外用山金車霜（Arnica Cream）亦可搭配使用。'},
+  {id:'nux-vomica',rarity:'common',nameZh:'馬錢子',nameEn:'Nux Vomica',latin:'Nux vomica 30C',emoji:'🌿',
+   symptoms:['消化不良','胃脹氣','噁心','宿醉','過度工作壓力','焦慮','便秘','睡眠品質差','過敏反應','情緒憤怒'],
+   desc:'楊景翔老師課程列為日常保健最常用的12種順勢複方之一。特別適合完美主義、工作過度、壓力大且容易發怒的體質，是現代都市人最常用的製劑。',
+   usage:'Nux vomica 30C，症狀出現時服用。晚餐後或睡前使用對消化及睡眠效果最佳。服用前後30分鐘避免咖啡、薄荷。'},
+  {id:'belladonna',rarity:'common',nameZh:'顛茄',nameEn:'Belladonna',latin:'Belladonna 30C/200C',emoji:'🍇',
+   symptoms:['突發高燒','劇烈頭痛','耳痛','喉嚨痛','急性感染','皮膚紅腫熱痛','光敏感','脈搏強烈','高血壓危象'],
+   desc:'順勢療法急性發熱和急性炎症的代表製劑。Boericke Materia Medica中記載Belladonna的特徵為「突然發作、紅腫熱痛、乾燥、脈搏快速有力」。',
+   usage:'急性症狀用Belladonna 200C，每15-30分鐘一次。症狀改善後立即停藥。適合「突然發作」且改善或惡化非常快速的情況。'},
+  {id:'rhus-tox',rarity:'common',nameZh:'毒葛',nameEn:'Rhus Toxicodendron',latin:'Rhus tox 30C',emoji:'🍃',
+   symptoms:['關節疼痛','關節僵硬','晨僵','肌腱韌帶損傷','帶狀疱疹','皮膚搔癢','水泡','運動後改善','寒冷潮濕加重'],
+   desc:'楊景翔老師課程中強調Rhus tox的關鍵指標是「動則改善、靜則加重、晨起最僵硬」。是骨關節炎、類風濕性關節炎和帶狀疱疹後神經痛的重要製劑。',
+   usage:'Rhus tox 30C，每日3次。適合需要長期使用的慢性關節問題。若Rhus tox效果不完整，可考慮改用Ruta graveolens（適合肌腱韌帶）。'},
+  {id:'ignatia',rarity:'common',nameZh:'聖依納爵豆',nameEn:'Ignatia',latin:'Ignatia amara 200C',emoji:'💔',
+   symptoms:['悲傷','喪親之痛','情緒波動','情緒創傷','哭泣後感覺好轉','憂鬱','喉嚨有哽塞感','失眠','歇斯底里','情緒壓抑'],
+   desc:'楊景翔老師課程列為最重要的情緒順勢製劑之一，專治急性悲傷和失落感。Ignatia的特徵是「情緒矛盾」—時而悲傷時而笑，典型症狀是喉嚨有梅核氣感。',
+   usage:'Ignatia 200C，急性悲傷時每30分鐘一次，連用3-4次。慢性情緒問題改用Natrum muriaticum（更適合壓抑已久的悲傷）。'},
+  {id:'arsenicum',rarity:'common',nameZh:'砷',nameEn:'Arsenicum Album',latin:'Arsenicum album 30C',emoji:'💊',
+   symptoms:['焦慮','恐慌發作','食物中毒','腹瀉','嘔吐','過敏反應','氣喘','皮膚搔癢','怕冷','完美主義焦慮'],
+   desc:'楊景翔老師課程強調Arsenicum album是焦慮和消化問題的重要製劑。其體質特徵是「不安、怕冷、怕孤獨、完美主義、午夜1-3點加重」。',
+   usage:'Arsenicum 30C，每日3次（急性消化問題每30分鐘）。適合過敏季節預防性使用，每日晨起一劑持續2週。'},
+  {id:'apis',rarity:'common',nameZh:'蜜蜂毒',nameEn:'Apis Mellifica',latin:'Apis mellifica 30C/200C',emoji:'🐝',
+   symptoms:['蜂螫','皮膚水腫','急性過敏','蕁麻疹','關節腫脹','眼皮浮腫','喉嚨腫脹','尿道感染','冰敷改善'],
+   desc:'楊景翔老師課程中Apis的關鍵指標是「紅腫如蜂螫、冰敷改善、熱敷加重、無口渴」。是急性水腫、過敏反應和關節積液的重要製劑。',
+   usage:'急性過敏Apis 200C立即使用，每15-30分鐘一次。嚴重過敏反應仍需緊急就醫。慢性水腫問題改用Apis 30C，每日3次。'},
+  {id:'bryonia',rarity:'common',nameZh:'噴瓜',nameEn:'Bryonia',latin:'Bryonia 30C',emoji:'🫁',
+   symptoms:['胸痛','關節疼痛','便秘','頭痛','咳嗽','動則加重','口渴','肺炎輔助','乾性咳嗽','膜炎'],
+   desc:'楊景翔老師課程強調Bryonia的關鍵指標是「完全靜止才舒服、任何動作都加重疼痛、極度口渴」。適合急性感冒演變為肺炎初期、或急性關節炎的輔助支持。',
+   usage:'Bryonia 30C，每日3-4次。與Rhus tox形成互補：Rhus tox動則改善，Bryonia動則加重。'},
+  {id:'lycopodium',rarity:'rare',nameZh:'石松',nameEn:'Lycopodium',latin:'Lycopodium 200C',emoji:'🌿',
+   symptoms:['消化脹氣','自信不足','社交恐懼','肝臟問題','右側症狀','腎結石','焦慮','消化虛弱','氣場問題','前列腺問題'],
+   desc:'楊景翔老師課程中Lycopodium是重要的體質順勢製劑（Constitutional remedy）。其體質特徵是「外表強勢內心不安全感、消化差、偏右側症狀」，是護肝和消化系統的深層製劑。',
+   usage:'Lycopodium 200C，體質製劑建議由受訓的順勢療法師處方。日常消化問題可使用30C，每日3次飯前服用。'},
+  {id:'pulsatilla',rarity:'rare',nameZh:'風鈴草',nameEn:'Pulsatilla',latin:'Pulsatilla 30C/200C',emoji:'🌸',
+   symptoms:['更年期症狀','荷爾蒙失調','月經不適','情緒波動','流淚','依賴感強','耳鼻喉問題','膽囊問題','子宮相關不適','濃稠黃鼻涕'],
+   desc:'楊景翔老師課程指Pulsatilla是最重要的女性順勢製劑之一。其體質特徵是「感情豐富、流淚易感動、戶外或涼風改善、怕熱、濃稠黃色分泌物」。',
+   usage:'Pulsatilla 30C，每日3次。適合體質軟弱、情感依賴、容易哭泣的女性。荷爾蒙相關問題可使用200C。'},
+  {id:'lachesis',rarity:'rare',nameZh:'叢矛頭蛇毒',nameEn:'Lachesis',latin:'Lachesis 200C',emoji:'🐍',
+   symptoms:['更年期症狀','左側症狀','喉嚨敏感','嫉妒','高血壓','熱潮紅','心血管問題','話多','月經不適','甲狀腺問題'],
+   desc:'楊景翔老師課程強調Lachesis是更年期和甲狀腺問題的重要體質製劑。其特徵是「話多控制欲強、嫉妒、左側為主、睡眠加重、喉嚨最怕被觸碰」。',
+   usage:'Lachesis 200C為體質製劑，建議由受訓順勢療法師處方。更年期潮熱可與Sepia搭配評估。'},
+  {id:'natrum-mur',rarity:'rare',nameZh:'食鹽',nameEn:'Natrum Muriaticum',latin:'Natrum muriaticum 200C',emoji:'🧂',
+   symptoms:['悲傷','情緒創傷','慢性憂鬱','偏頭痛','口腔潰瘍','皮膚乾燥','水腫','孤獨','情緒壓抑','乾性濕疹'],
+   desc:'楊景翔老師課程中Natrum muriaticum是慢性悲傷和孤獨的最重要製劑。其體質特徵是「獨立、不喜被安慰、壓抑悲傷、渴求孤獨但內心孤獨」。',
+   usage:'Natrum mur 200C為體質製劑。急性悲傷初期用Ignatia，等進入「慢性壓抑」階段轉用Natrum mur。'},
+  {id:'sulphur',rarity:'rare',nameZh:'硫磺',nameEn:'Sulphur',latin:'Sulphur 30C',emoji:'⚡',
+   symptoms:['皮膚問題','濕疹','皮膚搔癢','慢性皮膚病','足部灼熱','怕熱','消化問題','腹瀉','自我中心','創意豐富但散漫'],
+   desc:'楊景翔老師課程強調Sulphur是最重要的「解阻滯」製劑，可啟動慢性病的治療反應。其體質特徵是「怕熱怕洗澡、足部灼熱、皮膚紅癢、哲學思維」。',
+   usage:'Sulphur 30C可用於皮膚問題。作為體質製劑使用200C，需由受訓療法師評估後使用。治療反應期間可能出現短暫加重（Healing crisis）。'},
+  {id:'staphysagria',rarity:'rare',nameZh:'飛燕草種子',nameEn:'Staphysagria',latin:'Staphysagria 200C',emoji:'💔',
+   symptoms:['情緒創傷','邊界問題','壓抑憤怒','手術後疼痛','蟲咬','泌尿道感染','性創傷後遺症','自我價值低落','牙痛'],
+   desc:'楊景翔老師課程中Staphysagria是最重要的「界線」製劑，適合長期壓抑憤怒、感覺自我遭侵犯的患者。在身體層面對手術後傷口疼痛和泌尿道感染有顯著效果。',
+   usage:'Staphysagria 200C，情緒問題使用單劑或每週一次。手術後當天使用可配合Arnica一起使用（兩者輪流，間隔30分鐘）。'}
+];
+
+// ─── SYMPTOMS LIST ────────────────────────────────────────
 const symptoms=[
   {label:'頭痛',cat:'pain'},{label:'肌肉痠痛',cat:'pain'},{label:'關節疼痛',cat:'pain'},
   {label:'神經痛',cat:'pain'},{label:'慢性疼痛',cat:'pain'},{label:'體感止痛',cat:'pain'},
   {label:'運動傷害後修復',cat:'pain'},{label:'筋膜緊繃',cat:'pain'},{label:'肌腱韌帶損傷',cat:'pain'},
-  {label:'瘀傷',cat:'pain'},{label:'關節僵硬',cat:'pain'},
+  {label:'瘀傷',cat:'pain'},{label:'關節僵硬',cat:'pain'},{label:'偏頭痛',cat:'pain'},
   {label:'焦慮',cat:'emotion'},{label:'憂鬱',cat:'emotion'},{label:'壓力',cat:'emotion'},
   {label:'情緒不穩',cat:'emotion'},{label:'情緒低落',cat:'emotion'},{label:'情緒波動',cat:'emotion'},
   {label:'情緒憤怒',cat:'emotion'},{label:'悲傷',cat:'emotion'},{label:'自信不足',cat:'emotion'},
   {label:'自我接納困難',cat:'emotion'},{label:'過度思慮',cat:'emotion'},{label:'情緒創傷',cat:'emotion'},
   {label:'創傷後壓力',cat:'emotion'},{label:'恐懼',cat:'emotion'},{label:'社交恐懼',cat:'emotion'},
-  {label:'情緒壓抑',cat:'emotion'},
   {label:'失眠',cat:'sleep'},{label:'神經緊張',cat:'sleep'},{label:'自律神經失調',cat:'sleep'},
   {label:'恐慌發作',cat:'sleep'},{label:'心神不寧',cat:'sleep'},{label:'肌肉痙攣',cat:'sleep'},
-  {label:'神經衰弱',cat:'sleep'},{label:'慢性疲勞',cat:'sleep'},
+  {label:'神經衰弱',cat:'sleep'},{label:'慢性疲勞',cat:'sleep'},{label:'驚嚇後症狀',cat:'sleep'},
   {label:'感冒',cat:'immunity'},{label:'喉嚨痛',cat:'immunity'},{label:'咳嗽',cat:'immunity'},
   {label:'免疫力低下',cat:'immunity'},{label:'病毒感染',cat:'immunity'},{label:'皮膚感染',cat:'immunity'},
   {label:'口腔問題',cat:'immunity'},{label:'耳鼻喉問題',cat:'immunity'},{label:'環境淨化',cat:'immunity'},
@@ -172,16 +520,20 @@ const symptoms=[
   {label:'過敏反應',cat:'skin'},{label:'慢性皮膚病',cat:'skin'},{label:'皮膚搔癢',cat:'skin'},
   {label:'消化不良',cat:'digest'},{label:'噁心',cat:'digest'},{label:'胃脹氣',cat:'digest'},
   {label:'胃痙攣',cat:'digest'},{label:'腸道炎症',cat:'digest'},{label:'肝臟保護',cat:'digest'},
-  {label:'消化虛弱',cat:'digest'},
+  {label:'消化虛弱',cat:'digest'},{label:'便秘',cat:'digest'},{label:'腸道問題',cat:'digest'},
   {label:'荷爾蒙失調',cat:'hormone'},{label:'月經不適',cat:'hormone'},{label:'更年期症狀',cat:'hormone'},
-  {label:'經前症候群',cat:'hormone'},{label:'子宮相關不適',cat:'hormone'},
+  {label:'經前症候群',cat:'hormone'},{label:'泌乳問題',cat:'hormone'},{label:'子宮相關不適',cat:'hormone'},
+  {label:'甲狀腺問題',cat:'hormone'},{label:'腎上腺疲勞',cat:'hormone'},
   {label:'疲勞',cat:'energy'},{label:'水腫',cat:'energy'},{label:'淋巴循環差',cat:'energy'},
   {label:'局部循環不良',cat:'energy'},{label:'頭部沉重',cat:'energy'},{label:'鼻竇阻塞',cat:'energy'},
-  {label:'呼吸道問題',cat:'energy'},{label:'注意力不集中',cat:'energy'},
-  {label:'靈性凈化',cat:'energy'},{label:'冥想/靈性',cat:'energy'},{label:'環境消毒',cat:'energy'}
+  {label:'呼吸道問題',cat:'energy'},{label:'注意力不集中',cat:'energy'},{label:'靈性凈化',cat:'energy'},
+  {label:'冥想靈性',cat:'energy'},{label:'環境消毒',cat:'energy'},{label:'腦霧',cat:'energy'},
+  {label:'記憶力減退',cat:'energy'},{label:'心血管問題',cat:'energy'},{label:'抗老化',cat:'energy'}
 ];
 
-let selected=new Set(),currentCat='all';
+let selected=new Set();
+let customSymptoms=new Set();
+let currentCat='all';
 
 function renderSymptoms(filter='',cat='all'){
   const grid=document.getElementById('symptom-grid');
@@ -191,76 +543,186 @@ function renderSymptoms(filter='',cat='all'){
     const chip=document.createElement('div');
     chip.className='symptom-chip'+(selected.has(s.label)?' selected':'')+(visible?'':' hidden');
     chip.textContent=s.label;
-    chip.onclick=()=>toggleSymptom(s.label,chip);
+    chip.onclick=()=>toggleSymptom(s.label,chip,false);
     grid.appendChild(chip);
   });
 }
-function toggleSymptom(label,el){
-  if(selected.has(label)){selected.delete(label);el.classList.remove('selected');}
-  else{selected.add(label);el.classList.add('selected');}
+
+function toggleSymptom(label,el,isCustom){
+  if(selected.has(label)){
+    selected.delete(label);
+    if(isCustom)customSymptoms.delete(label);
+    if(el)el.classList.remove('selected');
+  } else {
+    selected.add(label);
+    if(isCustom)customSymptoms.add(label);
+    if(el)el.classList.add('selected');
+  }
   renderSelectedPills();
   document.getElementById('btn-find').disabled=selected.size===0;
 }
+
+function addCustomSymptom(){
+  const input=document.getElementById('custom-symptom-input');
+  const raw=input.value.trim();
+  if(!raw)return;
+  const labels=raw.split(/[，,、\n]+/).map(s=>s.trim()).filter(s=>s);
+  labels.forEach(label=>{
+    if(label&&!selected.has(label)){
+      selected.add(label);
+      customSymptoms.add(label);
+    }
+  });
+  input.value='';
+  renderSelectedPills();
+  document.getElementById('btn-find').disabled=selected.size===0;
+}
+
+document.getElementById('custom-symptom-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();addCustomSymptom();}
+});
+
 function renderSelectedPills(){
   const wrap=document.getElementById('selected-pills');
   wrap.innerHTML='';
   if(selected.size===0){wrap.innerHTML='<span class="empty-hint">尚未選擇任何症狀…</span>';return;}
   selected.forEach(label=>{
     const pill=document.createElement('div');
-    pill.className='selected-pill';
-    pill.innerHTML=label+'<button onclick="removeSymptom(\''+label+'\')">✕</button>';
+    const isCust=customSymptoms.has(label);
+    pill.className='selected-pill'+(isCust?' custom-pill':'');
+    pill.innerHTML=(isCust?'✏️ ':'')+label+'<button onclick="removeSymptom(\''+label.replace(/'/g,"\\'")+'\',' +(isCust?'true':'false')+')">✕</button>';
     wrap.appendChild(pill);
   });
 }
-function removeSymptom(label){
-  selected.delete(label);renderSelectedPills();
+
+function removeSymptom(label,isCustom){
+  selected.delete(label);
+  if(isCustom)customSymptoms.delete(label);
+  renderSelectedPills();
   document.getElementById('btn-find').disabled=selected.size===0;
   renderSymptoms(document.getElementById('symptom-search').value,currentCat);
 }
+
 document.getElementById('cat-tabs').addEventListener('click',e=>{
-  const tab=e.target.closest('.cat-tab');if(!tab)return;
+  const tab=e.target.closest('.cat-tab');
+  if(!tab)return;
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
-  tab.classList.add('active');currentCat=tab.dataset.cat;
+  tab.classList.add('active');
+  currentCat=tab.dataset.cat;
   renderSymptoms(document.getElementById('symptom-search').value,currentCat);
 });
-document.getElementById('symptom-search').addEventListener('input',e=>{renderSymptoms(e.target.value,currentCat);});
-function scoreOil(oil){let matches=[];oil.symptoms.forEach(s=>{if(selected.has(s))matches.push(s);});return{oil,matches,score:matches.length};}
-function findOils(){
+document.getElementById('symptom-search').addEventListener('input',e=>{
+  renderSymptoms(e.target.value,currentCat);
+});
+
+function scoreItem(item){
+  let matches=[];
+  item.symptoms.forEach(s=>{
+    if(selected.has(s))matches.push(s);
+    // fuzzy: check if any selected symptom is contained in the item symptom or vice versa
+    else {
+      selected.forEach(sel=>{
+        if(s.includes(sel)||sel.includes(s)){if(!matches.includes(s))matches.push(s);}
+      });
+    }
+  });
+  return{item,matches,score:matches.length};
+}
+
+function findAll(){
   if(selected.size===0)return;
-  const scored=oils.map(scoreOil).filter(r=>r.score>0);
-  scored.sort((a,b)=>b.score-a.score);
-  const commons=scored.filter(r=>r.oil.rarity==='common').slice(0,4);
-  const rares=scored.filter(r=>r.oil.rarity==='rare').slice(0,4);
   document.getElementById('step1').style.display='none';
   const resultsEl=document.getElementById('results');
   resultsEl.style.display='block';
-  document.getElementById('results-desc').textContent='根據您選擇的'+selected.size+'個症狀，以下精油能涵蓋最多您的需求：';
-  renderOilGrid('common-grid',commons,false);
-  renderOilGrid('rare-grid',rares,true);
-  setTimeout(()=>{document.querySelectorAll('.score-fill').forEach(bar=>{bar.style.width=bar.dataset.target;});},100);
+  document.getElementById('results-desc').textContent='根據您選擇的'+selected.size+'個症狀，以下是各療法的推薦結果：';
+
+  const scoreAndSplit=(db)=>{
+    const scored=db.map(scoreItem).filter(r=>r.score>0);
+    scored.sort((a,b)=>b.score-a.score);
+    return{
+      common:scored.filter(r=>r.item.rarity==='common').slice(0,4),
+      rare:scored.filter(r=>r.item.rarity==='rare').slice(0,4)
+    };
+  };
+
+  const oilRes=scoreAndSplit(oils);
+  renderGrid('oil-common-grid',oilRes.common,'oil',false);
+  renderGrid('oil-rare-grid',oilRes.rare,'oil',true);
+
+  const herbRes=scoreAndSplit(herbs);
+  renderGrid('herb-common-grid',herbRes.common,'herb',false);
+  renderGrid('herb-rare-grid',herbRes.rare,'herb',true);
+
+  const nutRes=scoreAndSplit(nutrients);
+  renderGrid('nut-common-grid',nutRes.common,'nut',false);
+  renderGrid('nut-rare-grid',nutRes.rare,'nut',true);
+
+  const homRes=scoreAndSplit(homeo);
+  renderGrid('hom-common-grid',homRes.common,'hom',false);
+  renderGrid('hom-rare-grid',homRes.rare,'hom',true);
+
+  setTimeout(()=>{
+    document.querySelectorAll('.score-fill').forEach(bar=>{bar.style.width=bar.dataset.target;});
+  },100);
   resultsEl.scrollIntoView({behavior:'smooth',block:'start'});
 }
-function renderOilGrid(gridId,results,isRare){
-  const grid=document.getElementById(gridId);grid.innerHTML='';
-  if(results.length===0){grid.innerHTML='<div class="no-match"><span class="big-emoji">'+(isRare?'💎':'🌿')+'</span>暫無符合的'+(isRare?'罕見':'常見')+'精油，建議增加症狀後再搜尋。</div>';return;}
+
+const MOD_EMOJI={oil:'🌸',herb:'🌿',nut:'💊',hom:'💧'};
+const MOD_NAMES={oil:'精油',herb:'草藥',nut:'營養素',hom:'順勢製劑'};
+
+function renderGrid(gridId,results,modality,isRare){
+  const grid=document.getElementById(gridId);
+  grid.innerHTML='';
+  if(results.length===0){
+    const emojis={oil:isRare?'💎':'🌿',herb:isRare?'🌱':'🍃',nut:isRare?'⚗️':'💊',hom:isRare?'🔬':'💧'};
+    grid.innerHTML='<div class="no-match"><span class="big-emoji">'+emojis[modality]+'</span>暫無符合的'+(isRare?'罕見':'常用')+MOD_NAMES[modality]+'，建議增加更多症狀後再搜尋。</div>';
+    return;
+  }
   results.forEach((r,i)=>{
     const pct=Math.round((r.score/selected.size)*100);
     const card=document.createElement('div');
-    card.className='oil-card'+(isRare?' rare':'');
-    card.innerHTML='<div class="oil-rank">#'+(i+1)+'</div><span class="oil-emoji">'+r.oil.emoji+'</span><div class="oil-name-zh">'+r.oil.nameZh+'</div><div class="oil-name-en">'+r.oil.nameEn+'</div><div class="oil-latin">'+r.oil.latin+'</div><div class="score-bar-wrap"><div class="score-label"><span>症狀涵蓋率</span><span>'+pct+'%（'+r.score+'/'+selected.size+'項）</span></div><div class="score-bar"><div class="score-fill" style="width:0" data-target="'+pct+'%"></div></div></div><div class="matched-symptoms"><div class="matched-label">✓ 符合的症狀：</div><div class="matched-pills">'+r.matches.map(m=>'<span class="matched-pill">'+m+'</span>').join('')+'</div></div><div class="oil-desc">'+r.oil.desc+'</div><div class="oil-tips"><span class="tip-icon">💡</span><span>'+r.oil.usage+'</span></div>';
+    card.className=modality+'-card'+(isRare?' rare':'');
+    card.innerHTML='<div class="oil-rank">#'+(i+1)+'</div>'
+      +'<span class="oil-emoji">'+r.item.emoji+'</span>'
+      +'<div class="oil-name-zh">'+r.item.nameZh+'</div>'
+      +'<div class="oil-name-en">'+r.item.nameEn+'</div>'
+      +'<div class="oil-latin">'+r.item.latin+'</div>'
+      +'<div class="score-bar-wrap"><div class="score-label"><span>症狀涵蓋率</span><span>'+pct+'%（'+r.score+'/'+selected.size+'項）</span></div>'
+      +'<div class="score-bar"><div class="score-fill" style="width:0" data-target="'+pct+'%"></div></div></div>'
+      +'<div class="matched-symptoms"><div class="matched-label">✓ 符合的症狀：</div>'
+      +'<div class="matched-pills">'+r.matches.map(m=>'<span class="matched-pill">'+m+'</span>').join('')+'</div></div>'
+      +'<div class="oil-desc">'+r.item.desc+'</div>'
+      +'<div class="oil-tips"><span class="tip-icon">💡</span><span>'+r.item.usage+'</span></div>';
     grid.appendChild(card);
   });
 }
+
+function switchMod(mod){
+  document.querySelectorAll('.mod-tab').forEach(t=>{
+    t.className='mod-tab';
+  });
+  document.querySelector('[data-mod="'+mod+'"]').className='mod-tab active-'+mod;
+  document.querySelectorAll('.modality-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+mod).classList.add('active');
+}
+
 function resetSearch(){
-  selected.clear();currentCat='all';
+  selected.clear();
+  customSymptoms.clear();
+  currentCat='all';
   document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
   document.querySelector('[data-cat="all"]').classList.add('active');
   document.getElementById('symptom-search').value='';
-  renderSymptoms();renderSelectedPills();
+  document.getElementById('custom-symptom-input').value='';
+  renderSymptoms();
+  renderSelectedPills();
   document.getElementById('btn-find').disabled=true;
   document.getElementById('step1').style.display='';
   document.getElementById('results').style.display='none';
+  document.getElementById('step1').scrollIntoView({behavior:'smooth'});
+  switchMod('oil');
 }
+
 renderSymptoms();
 </script>
 </body>
