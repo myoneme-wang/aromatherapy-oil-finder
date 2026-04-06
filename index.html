@@ -141,7 +141,38 @@
     .btn-reset:hover{background:var(--sage-pale);border-color:var(--sage)}
     footer{text-align:center;padding:2rem;color:var(--text-light);font-size:.82rem}
     .modality-section{margin-bottom:2rem}
-  </style>
+  
+    /* ── Affirmation Button ── */
+    .btn-affy{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.6rem 1.4rem;
+      background:linear-gradient(135deg,#7c5cbf,#a78bda);color:#fff;border:none;border-radius:30px;
+      font-size:.95rem;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(124,92,191,.35);
+      transition:transform .2s,box-shadow .2s}
+    .btn-affy:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,92,191,.45)}
+    /* ── Affirmation Modal ── */
+    .affy-overlay{display:none;position:fixed;inset:0;background:rgba(20,15,40,.55);
+      backdrop-filter:blur(6px);z-index:9000;align-items:center;justify-content:center;padding:1rem}
+    .affy-modal{background:#fff;border-radius:20px;max-width:640px;width:100%;max-height:88vh;
+      overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:affyIn .35s ease}
+    @keyframes affyIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .affy-modal-head{background:linear-gradient(135deg,#7c5cbf,#a78bda);color:#fff;
+      padding:1.4rem 1.6rem;border-radius:20px 20px 0 0;position:sticky;top:0;z-index:1}
+    .affy-modal-head h3{font-size:1.25rem;margin:0 0 .2rem}
+    .affy-modal-head p{font-size:.83rem;opacity:.88;margin:0}
+    .affy-modal-close{position:absolute;top:1rem;right:1.1rem;background:rgba(255,255,255,.25);
+      border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:1.1rem;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+    .affy-modal-close:hover{background:rgba(255,255,255,.4)}
+    .affy-modal-body{padding:1.2rem 1.4rem}
+    .affy-card{background:#faf9ff;border:1.5px solid #e8e0f5;border-radius:14px;
+      padding:1.1rem 1.3rem;margin-bottom:.9rem;transition:box-shadow .2s}
+    .affy-card:hover{box-shadow:0 4px 16px rgba(124,92,191,.15)}
+    .affy-src{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+      margin-bottom:.45rem;display:flex;align-items:center;gap:.3rem}
+    .affy-zh{font-size:1rem;font-weight:600;color:#2d2047;line-height:1.65;margin-bottom:.4rem}
+    .affy-en{font-size:.82rem;color:#7a6e92;font-style:italic;line-height:1.55}
+    .affy-footer{text-align:center;padding:.8rem 1.4rem 1.3rem;font-size:.82rem;color:#9c8fb8}
+
+    </style>
 </head>
 <body>
 <header>
@@ -191,6 +222,7 @@
     <div class="results-header">
       <h2>🌱 自然療法推薦結果</h2>
       <p id="results-desc"></p>
+      <button class="btn-affy" onclick="showAffirmations()">✨ 查看療癒肯定句</button>
     </div>
     <div class="modality-tabs" id="modality-tabs">
       <div class="mod-tab active-oil" data-mod="oil" onclick="switchMod('oil')">🌸 精油</div>
@@ -862,7 +894,245 @@ function resetSearch(){
   switchMod('oil');
 }
 
+
+// ══════════════════════════════════════════════════════════════════
+//  AFFIRMATION SYSTEM
+// ══════════════════════════════════════════════════════════════════
+const AFFY={
+  cat:{
+    pain:[
+      {zh:'疼痛是身體智慧的信使，我溫柔地傾聽它，也溫柔地允許它離去。',
+       en:'Pain is a messenger of my body\'s wisdom; I gently listen and gently allow it to pass.',src:'hay'},
+      {zh:'根輪的紅色大地能量穩穩支撐我，我在安全中釋放所有的緊繃與不適。',
+       en:'Root chakra\'s red earth energy supports me firmly; I release all tension and discomfort from a place of safety.',src:'chakra'},
+      {zh:'我有能力面對並超越身體的挑戰，每一天我都在朝向康復穩步前進。',
+       en:'I am capable of meeting and transcending physical challenges; every day I move steadily toward recovery.',src:'psych'}
+    ],
+    emotion:[
+      {zh:'我愛並完全接受此刻的自己，所有升起的情緒都是我完整性的一部分。',
+       en:'I love and fully accept myself right now; every emotion that arises is part of my wholeness.',src:'hay'},
+      {zh:'心輪的翠綠光芒溫柔包圍著我，我允許愛的能量流入每一個傷口，帶來撫慰。',
+       en:'Emerald light from my heart chakra gently surrounds me; I allow love to flow into every wound and bring comfort.',src:'chakra'},
+      {zh:'情緒是暫時的天氣，不是我的本質。我以慈悲的目光觀察自己，並溫柔地陪伴自己。',
+       en:'Emotions are passing weather, not my identity. I observe myself with compassion and accompany myself with gentleness.',src:'psych'}
+    ],
+    sleep:[
+      {zh:'我信任生命的流程，夜晚是安全的，我允許自己在深度的寧靜中休息與復原。',
+       en:'I trust life\'s flow; the night is safe. I allow myself to rest and restore in deep, peaceful stillness.',src:'hay'},
+      {zh:'太陽神經叢輪散發穩定的金色暖光，我的神經系統回到和諧與平衡的自然狀態。',
+       en:'My solar plexus chakra radiates steady golden warmth; my nervous system returns to its natural state of harmony and balance.',src:'chakra'},
+      {zh:'我的身體知道如何深度休息。我放下今天的一切，滿懷感謝地進入夜晚的懷抱。',
+       en:'My body knows how to rest deeply. I release this day with gratitude and enter the embrace of the night.',src:'psych'}
+    ],
+    immunity:[
+      {zh:'我的免疫系統是強大而智慧的衛士，我相信它每一刻都在守護我的健康與完整。',
+       en:'My immune system is a powerful, wise guardian; I trust it to protect my health and wholeness every moment.',src:'hay'},
+      {zh:'喉輪的藍色純淨能量流貫全身，清除一切對我有害的，守護一切滋養我的。',
+       en:'Pure blue energy from my throat chakra flows through my entire body, clearing what harms me and protecting what nourishes me.',src:'chakra'},
+      {zh:'我每天給予身體愛與支持，自癒的力量在我體內不斷增強，活躍於每一個細胞。',
+       en:'I give my body love and support each day; my self-healing power continuously strengthens, active in every cell.',src:'psych'}
+    ],
+    skin:[
+      {zh:'我感到安全、受保護，我的皮膚是強大的屏障，映照著我內在的平靜與和諧。',
+       en:'I feel safe and protected; my skin is a strong boundary, reflecting the peace and harmony within me.',src:'hay'},
+      {zh:'太陽神經叢輪的金色暖光滋養我的每一寸皮膚，我在自己的身體中感到自在舒適。',
+       en:'Golden warmth from my solar plexus chakra nourishes every inch of my skin; I feel at ease and comfortable in my body.',src:'chakra'},
+      {zh:'我的皮膚每天都在修復與更新。我以溫柔的照顧回應身體，它以健康光澤回應我。',
+       en:'My skin repairs and renews every day. I respond to my body with gentle care, and it responds to me with health and radiance.',src:'psych'}
+    ],
+    digest:[
+      {zh:'我輕鬆地接受並消化生命帶來的新體驗，我的身體和諧地吸收一切所需的滋養。',
+       en:'I easily receive and digest new experiences life brings; my body harmoniously absorbs all the nourishment it needs.',src:'hay'},
+      {zh:'臍輪橘色的流動能量溫暖我的腹部中心，我允許身體自然地接受、轉化與釋放。',
+       en:'Orange flowing energy from my sacral chakra warms my core; I allow my body to naturally receive, transform, and release.',src:'chakra'},
+      {zh:'我與食物的關係充滿愛與感恩。我傾聽身體的智慧，給予它真正需要的滋養。',
+       en:'My relationship with food is filled with love and gratitude. I listen to my body\'s wisdom and give it the nourishment it truly needs.',src:'psych'}
+    ],
+    hormone:[
+      {zh:'我接受並尊重自己生命的每一個階段，我的荷爾蒙節律自然趨向平衡與和諧。',
+       en:'I accept and honor every stage of my life; my hormonal rhythms naturally move toward balance and harmony.',src:'hay'},
+      {zh:'臍輪與海底輪的能量和諧流通，我的生命力充沛，陰陽能量在我身內美麗地調和。',
+       en:'Sacral and root chakra energies flow in harmony; my life force is abundant and yin-yang energy beautifully balances within me.',src:'chakra'},
+      {zh:'我的身體擁有自我調節的深層智慧。我溫柔地支持這個過程，相信它會找到平衡。',
+       en:'My body holds deep wisdom for self-regulation. I gently support this process, trusting it to find its balance.',src:'psych'}
+    ],
+    energy:[
+      {zh:'我滿懷喜悅地擁抱每一天，我的生命能量自由流動，在愛中滋養每一個細胞。',
+       en:'I joyfully embrace every day; my life energy flows freely, nourishing every cell with love.',src:'hay'},
+      {zh:'頂輪的白色宇宙能量從頭頂注入，穿越全身，喚醒每一個沉睡已久的細胞。',
+       en:'White cosmic energy from my crown chakra pours in through my crown, traveling through my body and awakening every long-sleeping cell.',src:'chakra'},
+      {zh:'我尊重自己的能量節奏。適時休息是智慧的展現，我在充分的休養中積蓄新的力量。',
+       en:'I honor my energy rhythm. Resting at the right time is wisdom; I accumulate new strength through wholehearted rest.',src:'psych'}
+    ]
+  },
+  sym:{
+    '焦慮':[
+      {zh:'我選擇相信生命是安全的。此刻我在當下，而當下是和平且美好的。',
+       en:'I choose to trust that life is safe. I am here in this moment, and this moment is peaceful and good.',src:'hay'}
+    ],
+    '憂鬱':[
+      {zh:'我選擇每天在生命中看見一個美好，我從內在深處點亮自己的光。',
+       en:'I choose to find one beauty in life each day; I light my own inner flame from deep within.',src:'hay'}
+    ],
+    '情緒創傷':[
+      {zh:'過去的傷痛已成為我的力量，我溫柔療癒每一個舊傷，把愛帶回曾經受傷的地方。',
+       en:'Past wounds have become my strength; I gently heal each old scar and bring love back to the places that once hurt.',src:'hay'}
+    ],
+    '創傷後壓力':[
+      {zh:'我在安全中回望過去，我的身體知道這個威脅已經過去，我在此刻是安全且完整的。',
+       en:'I look back at the past from safety; my body knows the threat has passed—I am safe and whole in this moment.',src:'psych'}
+    ],
+    '恐懼':[
+      {zh:'我溫柔地面對恐懼，發現它只是被誤解的能量。即使帶著恐懼，我依然勇敢向前。',
+       en:'I gently face my fears and find they are misunderstood energy. Even carrying fear, I move forward with courage.',src:'hay'}
+    ],
+    '社交恐懼':[
+      {zh:'我值得被愛與接納，我以真實的自我展現在世界面前，這樣的我已經足夠了。',
+       en:'I deserve love and acceptance; I show up in the world as my true self, and that is more than enough.',src:'psych'}
+    ],
+    '失眠':[
+      {zh:'夜晚是修復的恩典。我放下控制，信任我的身體會在最完美的時機引我入眠。',
+       en:'The night is a gift of restoration. I release control and trust my body to guide me into sleep at the perfect moment.',src:'hay'}
+    ],
+    '慢性疲勞':[
+      {zh:'我允許自己充分休息與接受支持，這不是軟弱，而是智慧。我值得被滋養與照顧。',
+       en:'I allow myself to fully rest and receive support—this is not weakness, but wisdom. I deserve to be nourished and cared for.',src:'hay'}
+    ],
+    '自律神經失調':[
+      {zh:'我的神經系統是有彈性且可被療癒的。我每天給予它安全、溫柔與耐心。',
+       en:'My nervous system is resilient and healable. I give it safety, gentleness, and patience every day.',src:'psych'}
+    ],
+    '更年期症狀':[
+      {zh:'更年期是我生命中優雅的蛻變，我以智慧和從容迎接這個嶄新的生命篇章。',
+       en:'Menopause is an elegant transformation in my life; I welcome this new chapter with wisdom and ease.',src:'hay'}
+    ],
+    '勃起功能障礙':[
+      {zh:'我完全接受自己的男性力量，我以溫柔和自我慈悲看待自己，我的生命力量自然流動。',
+       en:'I fully accept my masculine vitality; I hold myself with tenderness and self-compassion, and my life force flows naturally.',src:'hay'}
+    ],
+    '月經不適':[
+      {zh:'我接受並尊重自己女性的週期，它是生命力的自然節奏，我以愛陪伴身體的每個變化。',
+       en:'I honor my feminine cycle as a natural rhythm of life force; I accompany every change in my body with love.',src:'hay'}
+    ],
+    '免疫力低下':[
+      {zh:'我選擇用愛與善待自己來強化我的生命力，我的免疫系統在每一個溫柔的選擇中茁壯。',
+       en:'I choose to strengthen my vitality through love and self-kindness; my immune system thrives with each gentle choice I make.',src:'psych'}
+    ],
+    '新冠後遺症':[
+      {zh:'我的身體有著驚人的修復能力，我給它所需的時間、愛與支持，康復正在發生。',
+       en:'My body has an extraordinary capacity to heal; I give it the time, love, and support it needs—recovery is happening.',src:'psych'}
+    ],
+    '疫苗後遺症':[
+      {zh:'我相信我的身體有能力重建平衡，每一天都是恢復的新機會，我溫柔地陪伴這個過程。',
+       en:'I trust my body\'s ability to restore balance; every day is a new opportunity for recovery, and I gently accompany this process.',src:'psych'}
+    ],
+    '自信不足':[
+      {zh:'我天生擁有價值，不需要向任何人證明。我越來越能看見並欣賞自己獨特的光芒。',
+       en:'I am inherently worthy and need not prove it to anyone. I increasingly see and appreciate the unique light that I am.',src:'psych'}
+    ],
+    '自我接納困難':[
+      {zh:'我在此刻完全且深深地愛並接受自己。我的不完美是我人性美麗的一部分。',
+       en:'In this moment, I completely and deeply love and accept myself. My imperfections are a beautiful part of my humanity.',src:'hay'}
+    ],
+    '荷爾蒙失調':[
+      {zh:'我的臍輪能量自由流動，陰陽調和，我的身體正找回它的天然節律與平衡。',
+       en:'My sacral chakra energy flows freely; yin and yang are in harmony, and my body is rediscovering its natural rhythm and balance.',src:'chakra'}
+    ],
+    '皮膚敏感':[
+      {zh:'我在自己的皮膚裡感到安全自在。世界是友善的，我的邊界是健康且清晰的。',
+       en:'I feel safe and comfortable in my own skin. The world is friendly, and my boundaries are healthy and clear.',src:'hay'}
+    ],
+    '濕疹':[
+      {zh:'我釋放對衝突和刺激的抵抗，接受安全在我皮膚裡，我的皮膚在平靜中療癒。',
+       en:'I release my resistance to conflict and irritation; I accept safety within my skin, and my skin heals in peace.',src:'hay'}
+    ],
+    '過敏反應':[
+      {zh:'我對生命感到放鬆而開放，我的身體學會分辨真正的威脅與想像中的威脅。',
+       en:'I am relaxed and open to life; my body learns to distinguish real threats from imagined ones.',src:'hay'}
+    ],
+    '消化不良':[
+      {zh:'我輕鬆地吸收生命帶給我的新想法，我的消化系統在放鬆中順暢地運作。',
+       en:'I easily absorb the new ideas life brings me; my digestive system works smoothly when I am relaxed.',src:'hay'}
+    ],
+    '頭痛':[
+      {zh:'我放下自我批判，允許自己只是休息。頭部沉重的感覺在我的溫柔中逐漸消散。',
+       en:'I release self-criticism and allow myself to simply rest. The heaviness in my head gradually dissolves in my own gentleness.',src:'hay'}
+    ]
+  }
+};
+
+function getAffirmations(){
+  const results=[];
+  const seen=new Set();
+  const cats=new Set();
+  // collect categories
+  selected.forEach(s=>{
+    const sym=symptoms.find(x=>x.label===s);
+    if(sym) cats.add(sym.cat);
+  });
+  // specific symptom affirmations first
+  selected.forEach(s=>{
+    if(AFFY.sym[s]){
+      AFFY.sym[s].forEach(a=>{
+        if(!seen.has(a.zh)){seen.add(a.zh);results.push(a);}
+      });
+    }
+  });
+  // then category affirmations
+  cats.forEach(cat=>{
+    if(AFFY.cat[cat]){
+      AFFY.cat[cat].forEach(a=>{
+        if(!seen.has(a.zh)){seen.add(a.zh);results.push(a);}
+      });
+    }
+  });
+  // shuffle and cap at 7
+  for(let i=results.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [results[i],results[j]]=[results[j],results[i]];
+  }
+  return results.slice(0,7);
+}
+
+function showAffirmations(){
+  const afs=getAffirmations();
+  const container=document.getElementById('affy-cards');
+  container.innerHTML='';
+  const srcLabel={hay:'Louise Hay 身心對應',chakra:'脈輪能量',psych:'正向心理學'};
+  const srcColor={hay:'#5a8a4a',chakra:'#7c5cbf',psych:'#c47a1e'};
+  const srcIcon={hay:'🌿',chakra:'🔮',psych:'💛'};
+  afs.forEach(a=>{
+    const div=document.createElement('div');
+    div.className='affy-card';
+    div.innerHTML=
+      '<div class="affy-src" style="color:'+srcColor[a.src]+'">'
+        +srcIcon[a.src]+' '+srcLabel[a.src]+'</div>'
+      +'<div class="affy-zh">'+a.zh+'</div>'
+      +'<div class="affy-en">'+a.en+'</div>';
+    container.appendChild(div);
+  });
+  document.getElementById('affy-subtitle').textContent=
+    '根據你選擇的 '+selected.size+' 個症狀，為你精選的個人化療癒肯定句';
+  document.getElementById('affy-overlay').style.display='flex';
+}
+
+function closeAffirmations(e){
+  if(e.target===document.getElementById('affy-overlay'))
+    document.getElementById('affy-overlay').style.display='none';
+}
 renderSymptoms();
 </script>
+
+<div class="affy-overlay" id="affy-overlay" onclick="closeAffirmations(event)">
+  <div class="affy-modal" id="affy-modal">
+    <div class="affy-modal-head">
+      <h3>✨ 你的療癒肯定句</h3>
+      <p id="affy-subtitle">根據你選擇的症狀，為你精選的個人化療癒肯定句</p>
+      <button class="affy-modal-close" onclick="document.getElementById('affy-overlay').style.display='none'">✕</button>
+    </div>
+    <div class="affy-modal-body" id="affy-cards"></div>
+    <div class="affy-footer">💫 慢慢閱讀，讓這些話語滋養你的內心</div>
+  </div>
+</div>
 </body>
 </html>
