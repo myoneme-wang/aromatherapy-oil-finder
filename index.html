@@ -157,6 +157,15 @@
     .affy-en{font-size:.82rem;color:#7a6e92;font-style:italic;line-height:1.55}
     .affy-footer{text-align:center;padding:.6rem 0 .2rem;font-size:.83rem;color:#9c8fb8}
 
+    
+    /* ── Toxin Assessment Incoming Banner ── */
+    .toxin-banner{display:none;background:linear-gradient(135deg,#e8f4e8,#f0f7f0);
+      border:1.5px solid #7cb86a;border-radius:14px;padding:1rem 1.3rem;margin-bottom:1.4rem;
+      font-size:.88rem;color:#3d6b32}
+    .toxin-banner strong{display:block;font-size:1rem;margin-bottom:.3rem;color:#2d5124}
+    .toxin-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+    .toxin-pill{padding:.2rem .7rem;border-radius:20px;font-size:.78rem;font-weight:600;color:#fff}
+
     </style>
 </head>
 <body>
@@ -204,6 +213,13 @@
   </div>
 
   <div id="results">
+    
+    <!-- Toxin Assessment incoming banner -->
+    <div class="toxin-banner" id="toxin-banner">
+      <strong>🔗 來自「體內毒素負荷評估」的結果</strong>
+      根據你的評估，以下症狀已自動選取——你可以繼續調整後查看推薦：
+      <div class="toxin-pills" id="toxin-pills"></div>
+    </div>
     <div class="results-header">
       <h2>🌱 自然療法推薦結果</h2>
       <p id="results-desc"></p>
@@ -1104,7 +1120,90 @@ function renderAffirmations(){
     container.appendChild(div);
   });
 }
+
+// ══════════════════════════════════════════════════════════════════
+//  TOXIN ASSESSMENT INTEGRATION
+// ══════════════════════════════════════════════════════════════════
+const TOXIN_MAP={
+  mold:      {zh:'黴菌毒素',col:'#E67E22',
+    syms:['黴菌毒素','免疫力低下','慢性疲勞','神經衰弱','頭痛','過敏反應','失眠','焦慮']},
+  virus:     {zh:'病毒',col:'#3498DB',
+    syms:['病毒感染','免疫力低下','慢性疲勞','新冠後遺症','疫苗後遺症','疲勞','神經衰弱']},
+  bacteria:  {zh:'細菌',col:'#27AE60',
+    syms:['腸胃道感染','免疫力低下','念珠菌感染','披衣菌感染','腸道問題','腸道炎症']},
+  parasite:  {zh:'寄生蟲',col:'#8E44AD',
+    syms:['腸道問題','疲勞','消化不良','腸道炎症','腸道問題']},
+  heavymetal:{zh:'重金屬',col:'#C0392B',
+    syms:['慢性疲勞','神經衰弱','頭痛','自律神經失調','免疫力低下','疲勞','過敏反應']},
+  pesticide: {zh:'農藥',col:'#D4AC0D',
+    syms:['荷爾蒙失調','免疫力低下','甲狀腺問題','腎上腺疲勞','疲勞','過敏反應']},
+  endocrine: {zh:'環境荷爾蒙',col:'#E91E8C',
+    syms:['荷爾蒙失調','甲狀腺問題','腎上腺疲勞','月經不適','男性荷爾蒙偏低','疲勞']}
+};
+
+function loadFromToxinAssessment(){
+  const params=new URLSearchParams(window.location.search);
+  const toxinParam=params.get('toxins');
+  if(!toxinParam) return;
+
+  const toxins=toxinParam.split(',').filter(t=>TOXIN_MAP[t]);
+  if(toxins.length===0) return;
+
+  // Collect symptoms from top toxins (max 3 toxins, max 10 symptoms total)
+  const symSet=new Set();
+  toxins.slice(0,3).forEach(t=>{
+    TOXIN_MAP[t].syms.forEach(s=>symSet.add(s));
+  });
+
+  // Only select symptoms that exist in our DB
+  const validSyms=symptoms.map(s=>s.label);
+  symSet.forEach(s=>{
+    if(validSyms.includes(s)) selected.add(s);
+  });
+
+  // Show banner with toxin pills
+  const banner=document.getElementById('toxin-banner');
+  const pillContainer=document.getElementById('toxin-pills');
+  pillContainer.innerHTML=toxins.map(t=>{
+    const info=TOXIN_MAP[t];
+    return'<span class="toxin-pill" style="background:'+info.col+'">'+info.zh+'</span>';
+  }).join('');
+  banner.style.display='block';
+
+  // Render selected pills and enable button
+  renderSelectedPills();
+  const btn=document.getElementById('btn-find');
+  if(btn) btn.disabled=selected.size===0;
+
+  // Auto-run search and show results
+  if(selected.size>0){
+    document.getElementById('step1').style.display='none';
+    const resultsEl=document.getElementById('results');
+    resultsEl.style.display='block';
+    document.getElementById('results-desc').textContent='根據毒素評估結果，自動選取 '+selected.size+' 個相關症狀：';
+
+    const scoreAndSplit=(db)=>{
+      const scored=db.map(scoreItem).filter(r=>r.score>0);
+      scored.sort((a,b)=>b.score-a.score);
+      return{common:scored.filter(r=>r.item.rarity==='common').slice(0,4),
+             rare:scored.filter(r=>r.item.rarity==='rare').slice(0,4)};
+    };
+    renderGrid('oil-common-grid',scoreAndSplit(oils).common,'oil',false);
+    renderGrid('oil-rare-grid',scoreAndSplit(oils).rare,'oil',true);
+    renderGrid('herb-common-grid',scoreAndSplit(herbs).common,'herb',false);
+    renderGrid('herb-rare-grid',scoreAndSplit(herbs).rare,'herb',true);
+    renderGrid('nut-common-grid',scoreAndSplit(nutrients).common,'nut',false);
+    renderGrid('nut-rare-grid',scoreAndSplit(nutrients).rare,'nut',true);
+    renderGrid('hom-common-grid',scoreAndSplit(homeo).common,'hom',false);
+    renderGrid('hom-rare-grid',scoreAndSplit(homeo).rare,'hom',true);
+    setTimeout(()=>{
+      document.querySelectorAll('.score-fill').forEach(bar=>{bar.style.width=bar.dataset.target;});
+    },100);
+    resultsEl.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
 renderSymptoms();
+loadFromToxinAssessment();
 </script>
 
     <div class="affy-modal-body" id="affy-cards"></div>
