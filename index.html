@@ -142,35 +142,20 @@
     footer{text-align:center;padding:2rem;color:var(--text-light);font-size:.82rem}
     .modality-section{margin-bottom:2rem}
   
-    /* ── Affirmation Button ── */
-    .btn-affy{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;padding:.6rem 1.4rem;
-      background:linear-gradient(135deg,#7c5cbf,#a78bda);color:#fff;border:none;border-radius:30px;
-      font-size:.95rem;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(124,92,191,.35);
-      transition:transform .2s,box-shadow .2s}
-    .btn-affy:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,92,191,.45)}
-    /* ── Affirmation Modal ── */
-    .affy-overlay{display:none;position:fixed;inset:0;background:rgba(20,15,40,.55);
-      backdrop-filter:blur(6px);z-index:9000;align-items:center;justify-content:center;padding:1rem}
-    .affy-modal{background:#fff;border-radius:20px;max-width:640px;width:100%;max-height:88vh;
-      overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:affyIn .35s ease}
-    @keyframes affyIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .affy-modal-head{background:linear-gradient(135deg,#7c5cbf,#a78bda);color:#fff;
-      padding:1.4rem 1.6rem;border-radius:20px 20px 0 0;position:sticky;top:0;z-index:1}
-    .affy-modal-head h3{font-size:1.25rem;margin:0 0 .2rem}
-    .affy-modal-head p{font-size:.83rem;opacity:.88;margin:0}
-    .affy-modal-close{position:absolute;top:1rem;right:1.1rem;background:rgba(255,255,255,.25);
-      border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:1.1rem;
-      cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
-    .affy-modal-close:hover{background:rgba(255,255,255,.4)}
-    .affy-modal-body{padding:1.2rem 1.4rem}
+    
+    .mod-tab.active-affy{background:linear-gradient(135deg,#7c5cbf,#a78bda);color:white;border-color:#7c5cbf}
+    .mod-tab:hover:not(.active-oil):not(.active-herb):not(.active-nut):not(.active-hom):not(.active-affy){background:#f5f7f5}
+    /* ── Affirmation Panel ── */
+    .affy-intro{text-align:center;padding:.8rem 0 1.4rem;color:#6b5c8a;font-size:.9rem}
+    .affy-grid{display:grid;grid-template-columns:1fr;gap:.9rem}
     .affy-card{background:#faf9ff;border:1.5px solid #e8e0f5;border-radius:14px;
-      padding:1.1rem 1.3rem;margin-bottom:.9rem;transition:box-shadow .2s}
+      padding:1.1rem 1.3rem;transition:box-shadow .2s}
     .affy-card:hover{box-shadow:0 4px 16px rgba(124,92,191,.15)}
     .affy-src{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
       margin-bottom:.45rem;display:flex;align-items:center;gap:.3rem}
     .affy-zh{font-size:1rem;font-weight:600;color:#2d2047;line-height:1.65;margin-bottom:.4rem}
     .affy-en{font-size:.82rem;color:#7a6e92;font-style:italic;line-height:1.55}
-    .affy-footer{text-align:center;padding:.8rem 1.4rem 1.3rem;font-size:.82rem;color:#9c8fb8}
+    .affy-footer{text-align:center;padding:.6rem 0 .2rem;font-size:.83rem;color:#9c8fb8}
 
     </style>
 </head>
@@ -222,13 +207,13 @@
     <div class="results-header">
       <h2>🌱 自然療法推薦結果</h2>
       <p id="results-desc"></p>
-      <button class="btn-affy" onclick="showAffirmations()">✨ 查看療癒肯定句</button>
     </div>
     <div class="modality-tabs" id="modality-tabs">
       <div class="mod-tab active-oil" data-mod="oil" onclick="switchMod('oil')">🌸 精油</div>
       <div class="mod-tab" data-mod="herb" onclick="switchMod('herb')">🌿 草藥</div>
       <div class="mod-tab" data-mod="nut" onclick="switchMod('nut')">💊 營養素</div>
       <div class="mod-tab" data-mod="hom" onclick="switchMod('hom')">💧 順勢製劑</div>
+      <div class="mod-tab" data-mod="affy" onclick="switchMod('affy')">✨ 療癒肯定句</div>
     </div>
     <!-- Oil panel -->
     <div class="modality-panel active" id="panel-oil">
@@ -273,6 +258,12 @@
         <div class="section-title">🔬 罕見順勢製劑推薦 <span class="badge hom-rare">Top 4</span></div>
         <div class="oils-grid" id="hom-rare-grid"></div>
       </div>
+    </div>
+    <!-- Affirmation panel -->
+    <div class="modality-panel" id="panel-affy">
+      <div class="affy-intro">根據你選擇的症狀，為你精選的個人化療癒肯定句</div>
+      <div class="affy-grid" id="affy-cards"></div>
+      <div class="affy-footer">💫 慢慢閱讀，讓這些話語滋養你的內心</div>
     </div>
     <div class="disclaimer">⚕️ 本建議僅供學習參考，無法取代正規醫療診斷與治療。孕婦、兒童及特定疾病患者使用任何療法前請先諮詢醫師。資料來源自完整 Obsidian 醫療知識庫（4300+ 筆記），包含 NatMed Pro 臨床數據庫（150+ 草藥/營養素）、肯園芳療課程、台灣芳香醫學醫學會、楊景翔老師順勢療法全方位實作班（PART I-IV）、Kinesiology Institute 課程、Boericke Materia Medica。</div>
     <button class="btn-reset" onclick="resetSearch()">← 重新搜尋</button>
@@ -875,6 +866,7 @@ function switchMod(mod){
   document.querySelector('[data-mod="'+mod+'"]').className='mod-tab active-'+mod;
   document.querySelectorAll('.modality-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+mod).classList.add('active');
+  if(mod==='affy') renderAffirmations();
 }
 
 function resetSearch(){
@@ -1094,7 +1086,7 @@ function getAffirmations(){
   return results.slice(0,7);
 }
 
-function showAffirmations(){
+function renderAffirmations(){
   const afs=getAffirmations();
   const container=document.getElementById('affy-cards');
   container.innerHTML='';
@@ -1111,25 +1103,10 @@ function showAffirmations(){
       +'<div class="affy-en">'+a.en+'</div>';
     container.appendChild(div);
   });
-  document.getElementById('affy-subtitle').textContent=
-    '根據你選擇的 '+selected.size+' 個症狀，為你精選的個人化療癒肯定句';
-  document.getElementById('affy-overlay').style.display='flex';
-}
-
-function closeAffirmations(e){
-  if(e.target===document.getElementById('affy-overlay'))
-    document.getElementById('affy-overlay').style.display='none';
 }
 renderSymptoms();
 </script>
 
-<div class="affy-overlay" id="affy-overlay" onclick="closeAffirmations(event)">
-  <div class="affy-modal" id="affy-modal">
-    <div class="affy-modal-head">
-      <h3>✨ 你的療癒肯定句</h3>
-      <p id="affy-subtitle">根據你選擇的症狀，為你精選的個人化療癒肯定句</p>
-      <button class="affy-modal-close" onclick="document.getElementById('affy-overlay').style.display='none'">✕</button>
-    </div>
     <div class="affy-modal-body" id="affy-cards"></div>
     <div class="affy-footer">💫 慢慢閱讀，讓這些話語滋養你的內心</div>
   </div>
