@@ -812,7 +812,10 @@ function scoreItem(item){
   renderGrid('hom-common-grid',homRes.common,'hom',false);
   renderGrid('hom-rare-grid',homRes.rare,'hom',true);
 
-  setTimeout(()==�(�������յ��й�Օ��M����ѽ������͍�ɔ��������������������퉅ȹ��屔�ݥ�Ѡ���ȹ��х͕йхɝ������(���������(��ɕ�ձ����͍ɽ��%�ѽY��ܡ퉕��٥���͵��Ѡ���������х�Н���)�()����Ё5=}5=$�������~2�����Ɉ��~2��������~J �������~J�����)����Ё5=}95L�����蟲��¤����Ɉ蟢6'�^������蟞���+�Ҁ�����蟦��.��議增加更多症狀後再搜尋。</div>';
+function renderGrid(gridId,results,modality,isRare){
+  const grid=document.getElementById(gridId);
+  grid.innerHTML='';
+  if(!results||!results.length){
     return;
   }
   results.forEach((r,i)=>{
